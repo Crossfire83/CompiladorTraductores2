@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace CompiladorTraductores2
 {
     public partial class Form1 : Form
     {
+        Lexical l;
         public Form1()
         {
             InitializeComponent();
+            l = new Lexical();
+        }
+
+        private void btnParse_Click(object sender, System.EventArgs e)
+        {
+
         }
     }
 }
