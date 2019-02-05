@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace CompiladorTraductores2
 {
@@ -13,7 +14,11 @@ namespace CompiladorTraductores2
 
         private void btnParse_Click(object sender, System.EventArgs e)
         {
-
+            l.Input(sourceCodeTxt.Text);
+            List<Symbol> words = new List<Symbol>();
+            while (!l.IsFinished()) {
+                words.Add(l.NextSymbol());
+            }
         }
     }
 }

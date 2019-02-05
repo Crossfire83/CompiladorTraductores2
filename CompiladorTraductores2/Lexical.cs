@@ -70,9 +70,8 @@ namespace CompiladorTraductores2
         private bool IsSpace(char c) { return char.IsWhiteSpace(c); }
 
         //TODO: cambiar el nombre a ingles
-        private void retroceso() {
+        private void LeapBack() {
             if (c != '$') ind--;
-            cont = false;
         }
         
         public void Input(string font) {
@@ -92,112 +91,256 @@ namespace CompiladorTraductores2
                 c = NextChar();
                 switch (state) {
                     case 0:
-                        if (c >= '1' && c <= '9') //TODO: revisar si float o int pueden empezar en 0
+                        if (IsDigit(c)) //TODO: revisar si float o int pueden empezar en 0
                         {
                             temp.Append(c);
+                            result.name = "Integer";
+                            result.type = SymbolType.Integer;
                             state = 1;
                         }
                         else if (c == '+' || c == '-')
                         {
                             temp.Append(c);
-                            Acceptance(4);
                             result.name = "Add Operator";
                             result.type = SymbolType.AddOp;
+                            cont = false;
                         }
                         else if (c == '*' || c == '/')
                         {
                             temp.Append(c);
-                            Acceptance(4);
                             result.name = "Multiplication Operator";
                             result.type = SymbolType.MultOp;
+                            cont = false;
                         }
                         else if (c == '<' || c == '>')
                         {
                             temp.Append(c);
-                            Acceptance(5);
                             result.name = "Relational Operator";
                             result.type = SymbolType.RelatOp;
+                            state = 3;
                         }
-                        else if (c == '!' || c == '=') {
-                            temp.Append(c);
-                            Acceptance(6);
-                        }
-
-                        else throw new NotImplementedException(); // otro tipo o error
-                        break;
-                    case 1:
-                        if (c >= '0' && c <= '9')
+                        else if (c == '!' || c == '=')
                         {
                             temp.Append(c);
-                            Acceptance(1);
+                            state = 4;
+                        }
+                        else if (c == '&')
+                        {
+                            temp.Append(c);
+                            c = NextChar();
+                            temp.Append(c);
+                            if (temp.ToString() == "&&")
+                            {
+                                result.name = "And Operator";
+                                result.type = SymbolType.AndOp;
+                            }
+                            else
+                            {
+                                LeapBack();
+                                result.name = "Error";
+                                result.type = SymbolType.Error;
+                            }
+                            cont = false;
+                        }
+                        else if (c == '|')
+                        {
+                            temp.Append(c);
+                            c = NextChar();
+                            temp.Append(c);
+                            if (temp.ToString() == "||")
+                            {
+                                result.name = "Or Operator";
+                                result.type = SymbolType.OrOp;
+                            }
+                            else
+                            {
+                                LeapBack();
+                                result.name = "Error";
+                                result.type = SymbolType.Error;
+                            }
+                            cont = false;
+                        }
+                        else if (c == '(')
+                        {
+                            temp.Append(c);
+                            result.name = "Opening Parenthesis";
+                            result.type = SymbolType.OpenParenthesis;
+                            cont = false;
+                        }
+                        else if (c == ')')
+                        {
+                            temp.Append(c);
+                            result.name = "Closing Parenthesis";
+                            result.type = SymbolType.CloseParenthesis;
+                            cont = false;
+                        }
+                        else if (c == '{')
+                        {
+                            temp.Append(c);
+                            result.name = "Opening Bracket";
+                            result.type = SymbolType.OpenBracket;
+                            cont = false;
+                        }
+                        else if (c == '}')
+                        {
+                            temp.Append(c);
+                            result.name = "Closing Bracket";
+                            result.type = SymbolType.CloseBracket;
+                            cont = false;
+                        }
+                        else if (c == ';')
+                        {
+                            temp.Append(c);
+                            result.name = "SemiColon";
+                            result.type = SymbolType.SemiColon;
+                            cont = false;
+                        }
+                        else if (IsLetter(c))
+                        {
+                            temp.Append(c);
+                            result.name = "Identifier";
+                            result.type = SymbolType.Identifier;
+                            state = 5;
+                        }
+                        else if (c == '$')
+                        {
+                            temp.Append(c);
+                            result.name = "Currency";
+                            result.type = SymbolType.Currency;
+                            cont = false;
+                        }
+                        else if (IsSpace(c) || c == '\r' || c == '\n')
+                        {
+                            state = 0;
+                            cont = true;
+                        }
+                        else {
+                            temp.Append(c);
+                            result.name = "Error";
+                            result.type = SymbolType.Error;
+                            cont = false;
+                        } // error
+                        break;
+                    case 1:
+                        if (IsDigit(c))
+                        {
+                            temp.Append(c);
+
                             result.name = "int";
                             result.type = SymbolType.Integer;
                         }
-                        else if (c == '.') {
+                        else if (c == '.')
+                        {
                             state = 2;
                             temp.Append(c);
                         }
-                        else
-                            throw new NotImplementedException(); // otro simbolo o error
-
+                        else {
+                            cont = false;
+                            LeapBack();
+                        }
                         break;
                     case 2:
-                        if (c >= '0' && c <= '9')
+                        if (IsDigit(c))
                         {
                             temp.Append(c);
-                            Acceptance(3);
                             result.name = "float";
                             result.type = SymbolType.Real;
                         }
                         else {
-                            throw new NotImplementedException(); //error
+                            LeapBack();
+                            cont = false;
                         }
                         break;
                     case 3:
-                        if (c >= '0' && c <= '9')
-                        {
-                            temp.Append(c);
-                            state = 3;
-                        }
-                        else
-                            throw new NotImplementedException(); // otro simbolo o error
-                        break;
-                    case 4:
-
-                        break;
-                    case 5:
                         if (c == '=')
                         {
                             temp.Append(c);
-                            Acceptance(4);
                             result.name = "Relational Operator";
                             result.type = SymbolType.RelatOp;
                         }
                         else
-                            throw new NotImplementedException(); // otro simbolo o error
+                        {
+                            LeapBack();
+                            cont = false;
+                        }
                         break;
-                    case 6:
+                    case 4:
                         if (c == '=')
                         {
                             temp.Append(c);
-                            Acceptance(4);
+                            cont = false;
                             result.name = "Equality Operator";
                             result.type = SymbolType.EqualOp;
                         }
-                        else if (temp.ToString() == "=")
+                        else
                         {
-                            Acceptance(4);
-                            result.name = "Assignation Operator";
-                            result.type = SymbolType.Assignation;
+                            if (temp.ToString() == "=")
+                            {
+                                result.name = "Assignation Operator";
+                                result.type = SymbolType.Assignation;
+                            }
+                            else if (temp.ToString() == "!")
+                            {
+                                result.name = "Not Operator";
+                                result.type = SymbolType.NotOp;
+                            }
+                            cont = false;
+                            LeapBack();
                         }
-                        else if (temp.ToString() == "!") {
-                            Acceptance(4);
-                            result.name = "Not Operator";
-                            result.type = SymbolType.NotOp;
-                        }
-                            
                         break;
-
+                    case 5:
+                        if (IsLetter(c))
+                        {
+                            temp.Append(c);
+                            if (temp.ToString().ToLower() == "if")
+                            {
+                                result.name = "If";
+                                result.type = SymbolType.If;
+                                cont = false;
+                            }
+                            else if (temp.ToString().ToLower() == "else")
+                            {
+                                result.name = "Else";
+                                result.type = SymbolType.Else;
+                                cont = false;
+                            }
+                            else if (temp.ToString().ToLower() == "while")
+                            {
+                                result.name = "While";
+                                result.type = SymbolType.While;
+                                cont = false;
+                            }
+                            else if (temp.ToString().ToLower() == "return")
+                            {
+                                result.name = "Return";
+                                result.type = SymbolType.Return;
+                                cont = false;
+                            }
+                            else if (temp.ToString().ToLower() == "int" || 
+                                temp.ToString().ToLower() == "float" ||
+                                temp.ToString().ToLower() == "string")
+                            {
+                                result.name = "Type";
+                                result.type = SymbolType.Type;
+                                cont = false;
+                            }
+                            else
+                            {
+                                result.name = "Identifier";
+                                result.type = SymbolType.Identifier;
+                            }
+                        }
+                        else if (IsDigit(c))
+                        {
+                            temp.Append(c);
+                            result.name = "Identifier";
+                            result.type = SymbolType.Identifier;
+                        }
+                        else {
+                            LeapBack();
+                            cont = false;
+                        }
+                        break;
                 }
             }
             result.value = temp.ToString();

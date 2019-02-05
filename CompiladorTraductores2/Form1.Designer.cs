@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.sourceCodeTxt = new System.Windows.Forms.RichTextBox();
             this.btnParse = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -40,7 +40,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 79.375F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.625F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 359F));
-            this.tableLayoutPanel1.Controls.Add(this.richTextBox1, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.sourceCodeTxt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnParse, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -53,14 +53,14 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // richTextBox1
+            // sourceCodeTxt
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(344, 183);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
+            this.sourceCodeTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sourceCodeTxt.Location = new System.Drawing.Point(3, 3);
+            this.sourceCodeTxt.Name = "sourceCodeTxt";
+            this.sourceCodeTxt.Size = new System.Drawing.Size(344, 183);
+            this.sourceCodeTxt.TabIndex = 0;
+            this.sourceCodeTxt.Text = "";
             // 
             // btnParse
             // 
@@ -89,7 +89,7 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox sourceCodeTxt;
         private System.Windows.Forms.Button btnParse;
     }
 }
