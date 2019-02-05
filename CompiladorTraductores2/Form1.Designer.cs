@@ -31,7 +31,12 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sourceCodeTxt = new System.Windows.Forms.RichTextBox();
             this.btnParse = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.TokenValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TokenType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -42,12 +47,13 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 359F));
             this.tableLayoutPanel1.Controls.Add(this.sourceCodeTxt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnParse, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 74.44444F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.55556F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 106F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 89F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(800, 450);
@@ -56,9 +62,10 @@
             // sourceCodeTxt
             // 
             this.sourceCodeTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.sourceCodeTxt.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sourceCodeTxt.Location = new System.Drawing.Point(3, 3);
             this.sourceCodeTxt.Name = "sourceCodeTxt";
-            this.sourceCodeTxt.Size = new System.Drawing.Size(344, 183);
+            this.sourceCodeTxt.Size = new System.Drawing.Size(344, 147);
             this.sourceCodeTxt.TabIndex = 0;
             this.sourceCodeTxt.Text = "";
             // 
@@ -73,6 +80,40 @@
             this.btnParse.UseVisualStyleBackColor = true;
             this.btnParse.Click += new System.EventHandler(this.btnParse_Click);
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.TokenValue,
+            this.TokenType,
+            this.Token});
+            this.tableLayoutPanel1.SetColumnSpan(this.dataGridView1, 3);
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 156);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.Size = new System.Drawing.Size(794, 96);
+            this.dataGridView1.TabIndex = 2;
+            // 
+            // TokenValue
+            // 
+            this.TokenValue.HeaderText = "Value";
+            this.TokenValue.Name = "TokenValue";
+            this.TokenValue.Width = 200;
+            // 
+            // TokenType
+            // 
+            this.TokenType.HeaderText = "Type";
+            this.TokenType.Name = "TokenType";
+            this.TokenType.Width = 200;
+            // 
+            // Token
+            // 
+            this.Token.HeaderText = "Token";
+            this.Token.Name = "Token";
+            this.Token.Width = 200;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -82,6 +123,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -91,6 +133,10 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.RichTextBox sourceCodeTxt;
         private System.Windows.Forms.Button btnParse;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TokenValue;
+        private System.Windows.Forms.DataGridViewTextBoxColumn TokenType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Token;
     }
 }
 

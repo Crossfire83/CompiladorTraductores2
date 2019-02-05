@@ -14,11 +14,15 @@ namespace CompiladorTraductores2
 
         private void btnParse_Click(object sender, System.EventArgs e)
         {
+            dataGridView1.Rows.Clear();
             l.Input(sourceCodeTxt.Text);
             List<Symbol> words = new List<Symbol>();
             while (!l.IsFinished()) {
-                words.Add(l.NextSymbol());
+                Symbol s = l.NextSymbol();
+                words.Add(s);
+                dataGridView1.Rows.Add(s.value, s.name, ((int)s.type).ToString());
             }
+            
         }
     }
 }

@@ -128,9 +128,9 @@ namespace CompiladorTraductores2
                         {
                             temp.Append(c);
                             c = NextChar();
-                            temp.Append(c);
-                            if (temp.ToString() == "&&")
+                            if (c == '&')
                             {
+                                temp.Append(c);
                                 result.name = "And Operator";
                                 result.type = SymbolType.AndOp;
                             }
@@ -146,9 +146,9 @@ namespace CompiladorTraductores2
                         {
                             temp.Append(c);
                             c = NextChar();
-                            temp.Append(c);
-                            if (temp.ToString() == "||")
+                            if (c == '|')
                             {
+                                temp.Append(c);
                                 result.name = "Or Operator";
                                 result.type = SymbolType.OrOp;
                             }
