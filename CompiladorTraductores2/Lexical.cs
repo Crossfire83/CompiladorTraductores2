@@ -52,7 +52,7 @@ namespace CompiladorTraductores2
         }
 
         private char NextChar() {
-            if (IsFinished()) return '$';
+            if (IsFinished()) return '\0';
             return font[ind++];
         }
 
@@ -67,7 +67,7 @@ namespace CompiladorTraductores2
 
         private bool IsDigit(char c) { return char.IsDigit(c); }
 
-        private bool IsSpace(char c) { return char.IsWhiteSpace(c); }
+        private bool IsSpace(char c) { return char.IsWhiteSpace(c) || c == '\r' || c == '\n'; }
 
         //TODO: cambiar el nombre a ingles
         private void LeapBack() {
@@ -209,10 +209,17 @@ namespace CompiladorTraductores2
                             result.type = SymbolType.Currency;
                             cont = false;
                         }
-                        else if (IsSpace(c) || c == '\r' || c == '\n')
+                        else if (IsSpace(c))
                         {
                             state = 0;
                             cont = true;
+                        }
+                        else if (c == '"')
+                        {
+                            temp.Append(c);
+                            result.name = "String";
+                            result.type = SymbolType.String;
+                            state = 7;
                         }
                         else {
                             temp.Append(c);
@@ -245,10 +252,13 @@ namespace CompiladorTraductores2
                             temp.Append(c);
                             result.name = "float";
                             result.type = SymbolType.Real;
+                            state = 6;
                         }
                         else {
-                            LeapBack();
+                            result.name = "Error";
+                            result.type = SymbolType.Error;
                             cont = false;
+                            LeapBack();
                         }
                         break;
                     case 3:
@@ -338,6 +348,39 @@ namespace CompiladorTraductores2
                         }
                         else {
                             LeapBack();
+                            cont = false;
+                        }
+                        break;
+                    case 6:
+                        if (IsDigit(c))
+                        {
+                            temp.Append(c); //tipo ya fue asignado en estado 2
+                        }
+                        else {
+                            cont = false;
+                        }
+                        break;
+                    case 7:
+                        if (c == '"')
+                        {
+                            if (temp.ToString()[temp.Length - 1] == '\\')
+                            {
+                                temp.Append(c);
+                            }
+                            else
+                            {
+                                temp.Append(c);
+                                cont = false;
+                            }
+                        }
+                        else if (c != '\r' && c != '\n' && c != '\0')
+                        {
+                            temp.Append(c);
+                        }
+                        else {
+                            temp.Append(c);
+                            result.name = "Error";
+                            result.type = SymbolType.Error;
                             cont = false;
                         }
                         break;
