@@ -20,7 +20,19 @@ namespace CompiladorTraductores2
             while (!l.IsFinished()) {
                 Symbol s = l.NextSymbol();
                 words.Add(s);
-                dataGridView1.Rows.Add(s.value, s.name, ((int)s.type).ToString());
+                DataGridViewRow row = new DataGridViewRow();
+
+                row.CreateCells(dataGridView1);
+                row.Cells[0].Value = s.value;
+                row.Cells[1].Value = s.name;
+                row.Cells[2].Value = ((int)s.type).ToString();
+                if (((int)s.type) == -1) {
+                    foreach (DataGridViewCell cell in row.Cells) {
+                        cell.Style.BackColor = System.Drawing.Color.Red;
+                        cell.Style.ForeColor = System.Drawing.Color.White;
+                    }
+                }
+                dataGridView1.Rows.Add(row);
             }
             
         }

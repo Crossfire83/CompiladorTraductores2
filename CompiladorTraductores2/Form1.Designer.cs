@@ -100,19 +100,22 @@
             // 
             this.TokenValue.HeaderText = "Value";
             this.TokenValue.Name = "TokenValue";
-            this.TokenValue.Width = 200;
+            this.TokenValue.ReadOnly = true;
+            this.TokenValue.Width = 250;
             // 
             // TokenType
             // 
             this.TokenType.HeaderText = "Type";
             this.TokenType.Name = "TokenType";
-            this.TokenType.Width = 200;
+            this.TokenType.ReadOnly = true;
+            this.TokenType.Width = 250;
             // 
             // Token
             // 
             this.Token.HeaderText = "Token";
             this.Token.Name = "Token";
-            this.Token.Width = 200;
+            this.Token.ReadOnly = true;
+            this.Token.Width = 250;
             // 
             // Form1
             // 
