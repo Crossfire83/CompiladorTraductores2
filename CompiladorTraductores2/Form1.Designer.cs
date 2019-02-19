@@ -31,12 +31,12 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sourceCodeTxt = new System.Windows.Forms.RichTextBox();
             this.btnParse = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.SymbolsTable = new System.Windows.Forms.DataGridView();
             this.TokenValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TokenType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SymbolsTable)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -47,7 +47,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 359F));
             this.tableLayoutPanel1.Controls.Add(this.sourceCodeTxt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnParse, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.dataGridView1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.SymbolsTable, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -80,21 +80,21 @@
             this.btnParse.UseVisualStyleBackColor = true;
             this.btnParse.Click += new System.EventHandler(this.btnParse_Click);
             // 
-            // dataGridView1
+            // SymbolsTable
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.SymbolsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.SymbolsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.TokenValue,
             this.TokenType,
             this.Token});
-            this.tableLayoutPanel1.SetColumnSpan(this.dataGridView1, 3);
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dataGridView1.Location = new System.Drawing.Point(3, 156);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.Size = new System.Drawing.Size(794, 96);
-            this.dataGridView1.TabIndex = 2;
+            this.tableLayoutPanel1.SetColumnSpan(this.SymbolsTable, 3);
+            this.SymbolsTable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SymbolsTable.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.SymbolsTable.Location = new System.Drawing.Point(3, 156);
+            this.SymbolsTable.Name = "SymbolsTable";
+            this.SymbolsTable.ReadOnly = true;
+            this.SymbolsTable.Size = new System.Drawing.Size(794, 96);
+            this.SymbolsTable.TabIndex = 2;
             // 
             // TokenValue
             // 
@@ -127,7 +127,7 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SymbolsTable)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -137,7 +137,7 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.RichTextBox sourceCodeTxt;
         private System.Windows.Forms.Button btnParse;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView SymbolsTable;
         private System.Windows.Forms.DataGridViewTextBoxColumn TokenValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn TokenType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Token;
