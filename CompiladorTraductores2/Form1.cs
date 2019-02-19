@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -15,31 +14,63 @@ namespace CompiladorTraductores2
             InitializeComponent();
             TablePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TablaLR.txt";
             RulesPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Producciones.txt";
+            s = new Sintactical(ref SymbolsTable);
         }
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            s = new Sintactical(sourceCodeTxt.Text, ref SymbolsTable);
             s.SetLRTable(File.ReadAllLines(TablePath));
             s.SetRules(File.ReadAllText(RulesPath));
+            s.Analiza(sourceCodeTxt.Text);
+        }
 
-            while (!s.l.IsFinished()) {
-                Symbol sym = s.l.NextSymbol();
-                DataGridViewRow row = new DataGridViewRow();
-
-                row.CreateCells(SymbolsTable);
-                row.Cells[0].Value = sym.value;
-                row.Cells[1].Value = sym.name;
-                row.Cells[2].Value = ((int)sym.type).ToString();
-                if (((int)sym.type) == -1) {
-                    foreach (DataGridViewCell cell in row.Cells) {
-                        cell.Style.BackColor = System.Drawing.Color.Red;
-                        cell.Style.ForeColor = System.Drawing.Color.White;
-                    }
-                }
-                SymbolsTable.Rows.Add(row);
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            string temp = ShowOpenFileDialog("Seleccione archivo con el codigo fuente", "Text files (*.txt)|*.txt");
+            if (temp != String.Empty) {
+                sourceCodeTxt.Text = File.ReadAllText(temp);
             }
-            
+        }
+
+        private void toolStripButton2_Click(object sender, EventArgs e)
+        {
+            string temp = ShowOpenFileDialog("Seleccione archivo con la tabla LR", "Text files (*.txt)|*.txt");
+            if (temp != String.Empty) {
+                TablePath = temp;
+            }
+        }
+
+        private void toolStripButton3_Click(object sender, EventArgs e)
+        {
+            string temp = ShowOpenFileDialog("Seleccione archivo con las Reglas de Produccion", "Text files (*.txt)|*.txt");
+            if (temp != String.Empty)
+            {
+                RulesPath = temp;
+            }
+        }
+
+        private string ShowOpenFileDialog(string title, string filter)
+        {
+            string file = String.Empty;
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Multiselect = false,
+                Title = title,
+                Filter = filter,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            };
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    file = openFileDialog.FileName;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("El archivo no se puede abrir", "Se ha producido un error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            return file;
         }
     }
 }

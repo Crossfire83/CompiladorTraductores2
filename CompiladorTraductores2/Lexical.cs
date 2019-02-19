@@ -7,12 +7,9 @@ namespace CompiladorTraductores2
     {
         private string font;
         private int ind;
-        private bool cont;
         private char c;
-        private int state;
         public Symbol result;
-        public int type;
-
+        
         public Lexical()
         {
             ind = 0;
@@ -26,13 +23,6 @@ namespace CompiladorTraductores2
         private char NextChar() {
             if (IsFinished()) return '\0';
             return font[ind++];
-        }
-
-        private void NextState(int state) { this.state = state; }
-
-        private void Acceptance(int state) {
-            this.state = state;
-            cont = false;
         }
 
         private bool IsLetter(char c) { return char.IsLetter(c); }
@@ -53,8 +43,8 @@ namespace CompiladorTraductores2
         public string TypeToString(int type) { throw new NotImplementedException(); }
 
         public Symbol NextSymbol() {
-            state = 0;
-            cont = true;
+            int state = 0;
+            bool cont = true;
             result = new Symbol();
             StringBuilder temp = new StringBuilder();
 
@@ -62,7 +52,7 @@ namespace CompiladorTraductores2
                 c = NextChar();
                 switch (state) {
                     case 0:
-                        if (IsDigit(c)) //TODO: revisar si float o int pueden empezar en 0
+                        if (IsDigit(c))
                         {
                             temp.Append(c);
                             result.name = "Integer";

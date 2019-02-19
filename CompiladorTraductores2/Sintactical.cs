@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections;
 
@@ -16,8 +14,7 @@ namespace CompiladorTraductores2
         public List<List<int>> LRTable;
         internal Rule[] Rules;
 
-        public Sintactical(string text, ref DataGridView SymbolsTable) {
-            l = new Lexical(text);
+        public Sintactical(ref DataGridView SymbolsTable) {
             this.SymbolsTable = SymbolsTable;
             this.SymbolsTable.Rows.Clear();
             SyntacticalStack = new Stack();
@@ -29,12 +26,13 @@ namespace CompiladorTraductores2
 
             for (int index = 0; index < lines.Length; index++)
             {
+                table.Add(new List<int>());
                 lines[index] = lines[index].Trim();
                 string[] cols = lines[index].Split('\t');
                 int[] intcols = cols.Select(s => Int32.Parse(s)).ToArray();
                 for (int index1 = 0; index1 < intcols.Length; index1++)
                 {
-                    table[index][index1] = intcols[index1];
+                    table[index].Add(intcols[index1]);
                 }
             }
             this.LRTable = table;
@@ -57,7 +55,29 @@ namespace CompiladorTraductores2
             Rules = data;
         }
 
-        public void Analiza() {
+        public void Analiza(string text) {
+            l = new Lexical(text);
+
+            //while (!s.l.IsFinished())
+            //{
+            //    Symbol sym = s.l.NextSymbol();
+            //    DataGridViewRow row = new DataGridViewRow();
+
+            //    row.CreateCells(SymbolsTable);
+            //    row.Cells[0].Value = sym.value;
+            //    row.Cells[1].Value = sym.name;
+            //    row.Cells[2].Value = ((int)sym.type).ToString();
+            //    if (((int)sym.type) == -1)
+            //    {
+            //        foreach (DataGridViewCell cell in row.Cells)
+            //        {
+            //            cell.Style.BackColor = System.Drawing.Color.Red;
+            //            cell.Style.ForeColor = System.Drawing.Color.White;
+            //        }
+            //    }
+            //    SymbolsTable.Rows.Add(row);
+            //}
+
             int x = 0;  //Fila
             int y = 0;  //Columna
             int r = 0;  //Resultado (regla, desplazamiento o aceptacion)
