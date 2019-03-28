@@ -8,20 +8,36 @@ namespace CompiladorTraductores2
     {
         Sintactical s;
         string TablePath;
-        string RulesPath;
         public Form1()
         {
             InitializeComponent();
-            TablePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\TablaLR.txt";
-            RulesPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\Producciones.txt";
+            TablePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\compilador.lr";
             s = new Sintactical(ref SymbolsTable);
         }
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-            s.SetLRTable(File.ReadAllLines(TablePath));
-            s.SetRules(File.ReadAllText(RulesPath));
-            s.Analiza(sourceCodeTxt.Text);
+            SymbolsTable.Rows.Clear();
+            if (String.IsNullOrWhiteSpace(TablePath)) {
+                MessageBox.Show("Por favor cargar archivo con reglas de producción");
+                return;
+            }
+            try
+            {
+                s.SetLRTable(File.ReadAllLines(TablePath));
+                string result = s.Analiza(sourceCodeTxt.Text);
+                if (String.IsNullOrWhiteSpace(result))
+                {
+                    ResultLabel.Text = "Análisis lexico y sintactico terminado.";
+                }
+                else {
+                    ResultLabel.Text = result;
+                }
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.ToString());
+            }
+            
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -34,18 +50,9 @@ namespace CompiladorTraductores2
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            string temp = ShowOpenFileDialog("Seleccione archivo con la tabla LR", "Text files (*.txt)|*.txt");
+            string temp = ShowOpenFileDialog("Seleccione archivo con la tabla LR y Reglas de Produccion", "LR files (*.lr)|*.lr");
             if (temp != String.Empty) {
                 TablePath = temp;
-            }
-        }
-
-        private void toolStripButton3_Click(object sender, EventArgs e)
-        {
-            string temp = ShowOpenFileDialog("Seleccione archivo con las Reglas de Produccion", "Text files (*.txt)|*.txt");
-            if (temp != String.Empty)
-            {
-                RulesPath = temp;
             }
         }
 

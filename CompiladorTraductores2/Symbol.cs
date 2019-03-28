@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CompiladorTraductores2
+﻿namespace CompiladorTraductores2
 {
     public enum SymbolType
     {
         Error = -1,
-        Identifier = 0,
-        Integer = 1,
-        Real = 2,
-        String = 3,
-        Type = 4,
-        AddOp = 5,
-        MultOp = 6,
-        RelatOp = 7,
-        OrOp = 8,
-        AndOp = 9,
-        NotOp = 10,
-        EqualOp = 11,
+        identificador = 0,
+        entero = 1,
+        real = 2,
+        cadena = 3,
+        tipo = 4,
+        opSuma = 5,
+        opMul = 6,
+        opRelac = 7,
+        opOr = 8,
+        opAnd = 9,
+        opNot = 10,
+        opIgualdad = 11,
         SemiColon = 12,
         Comma = 13,
         OpenParenthesis = 14,
@@ -40,5 +34,10 @@ namespace CompiladorTraductores2
         public SymbolType type;
         public string name;
         public string value;
+
+        public override string ToString()
+        {
+            return "Name: " + name + "; Value: " + value;
+        }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CompiladorTraductores2
 {
@@ -14,11 +9,21 @@ namespace CompiladorTraductores2
         public StackElement() {
 
         }
+
+        public override string ToString()
+        {
+            return symbol.ToString();
+        }
     }
     public class State : StackElement
     {
         public int transicion;
         public State(int e) { transicion = e; }
+
+        public override string ToString()
+        {
+            return "Y: " + transicion.ToString();
+        }
     }
 
     public class Terminal : StackElement
@@ -33,6 +38,11 @@ namespace CompiladorTraductores2
                 symbol = c
             };
         }
+
+        public override string ToString()
+        {
+            return element.ToString();
+        }
     }
 
     public class NonTerminal : StackElement
@@ -45,11 +55,16 @@ namespace CompiladorTraductores2
             columna = c;
             element = new StackElement();
         }
+
+        public override string ToString()
+        {
+            return "Columna: " + columna.ToString();
+        }
     }
 
     public class Programa : StackElement
     {
-        public Programa(ref Stack pilaSintactica)
+        public Programa(ref Stack<StackElement> pilaSintactica)
         {
             pilaSintactica.Pop();
             Next = (NonTerminal)pilaSintactica.Pop();
@@ -78,7 +93,7 @@ namespace CompiladorTraductores2
         public StackElement id;
         public StackElement lvar;
 
-        public DefVar(ref Stack pila)
+        public DefVar(ref Stack<StackElement> pila)
         {
             tipo = new StackElement();
             id = new StackElement();
@@ -86,13 +101,13 @@ namespace CompiladorTraductores2
             pila.Pop();//quita estado
             pila.Pop(); //quita  ;
             pila.Pop(); //quita estado estado
-            lvar = (StackElement)pila.Pop(); //quita ListaVar
+            lvar = pila.Pop(); //quita ListaVar
             pila.Pop(); //quita estado
             id = new Identificador(((Terminal)pila.Pop()).symbol); //quita Id
 
             pila.Pop(); //quita estado
             tipo = new Tipo(((Terminal)pila.Pop()).symbol); //quita tipo
-            id.symbol.name = tipo.symbol.name;
+            //id.symbol.name = tipo.symbol.name;
         }
 
         public DefVar()
@@ -107,21 +122,21 @@ namespace CompiladorTraductores2
         private StackElement parametros;
         private StackElement bloqueFunc;
 
-        public DefFunc(ref Stack pila)
+        public DefFunc(ref Stack<StackElement> pila)
         {
             pila.Pop();//quita estado
-            bloqueFunc = (StackElement)pila.Pop();//quita <bloqfunc> //aqui me quede
+            bloqueFunc = pila.Pop();//quita <bloqfunc> //aqui me quede
             pila.Pop();//quita estado
             pila.Pop();//quita )
             pila.Pop();//quita estado
-            parametros = (StackElement)pila.Pop();//quita <parametros>
+            parametros = pila.Pop();//quita <parametros>
             pila.Pop();//quita estado
             pila.Pop();//quita (
             pila.Pop();//quita estado
             id = new Identificador(((Terminal)pila.Pop()).symbol);//quita id
             pila.Pop();//quita estado
             tipo = new Tipo(((Terminal)pila.Pop()).symbol);//quita el tipo
-            id.symbol.name = tipo.symbol.name;
+            //id.symbol.name = tipo.symbol.name;
         }
     }
 
@@ -130,18 +145,18 @@ namespace CompiladorTraductores2
         private StackElement tipo;
         private StackElement id;
         private StackElement listaParams;
-        public Parametros(ref Stack pila)
+        public Parametros(ref Stack<StackElement> pila)
         {
 
             pila.Pop();//quita estado
 
-            listaParams = (StackElement)pila.Pop();//quita la lista de aprametros
+            listaParams = pila.Pop();//quita la lista de aprametros
             pila.Pop();//quita estado
             id = new Identificador(((Terminal)pila.Pop()).symbol);//quita el id
             pila.Pop(); //quita estado
 
             tipo = new Tipo(((Terminal)pila.Pop()).symbol);//quita el tipo
-            id.symbol.name = tipo.symbol.name;
+            //id.symbol.name = tipo.symbol.name;
         }
     }
 
@@ -149,12 +164,12 @@ namespace CompiladorTraductores2
     {
         StackElement id;
         StackElement expresion;
-        public Asignacion(ref Stack pila) //<Sentencia> ::= id = <Expresion> ;
+        public Asignacion(ref Stack<StackElement> pila) //<Sentencia> ::= id = <Expresion> ;
         {
             pila.Pop();
             pila.Pop(); //quita la ;
             pila.Pop();
-            expresion = (StackElement)pila.Pop(); //quita expresion
+            expresion = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita =
             pila.Pop();
@@ -167,16 +182,16 @@ namespace CompiladorTraductores2
         StackElement expresion;
         StackElement sentenciabloque;
         StackElement otro;
-        public If(ref Stack pila)
+        public If(ref Stack<StackElement> pila)
         {
             pila.Pop();
-            otro = (StackElement)pila.Pop(); //quita otro
+            otro = pila.Pop(); //quita otro
             pila.Pop();
-            sentenciabloque = (StackElement)pila.Pop(); //quita sentencia bloque
+            sentenciabloque = pila.Pop(); //quita sentencia bloque
             pila.Pop();
             pila.Pop(); //quita )
             pila.Pop();
-            expresion = (StackElement)pila.Pop(); //quita expresion
+            expresion = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita (
             pila.Pop();
@@ -189,14 +204,14 @@ namespace CompiladorTraductores2
         StackElement expresion;
         StackElement bloque;
 
-        public While(ref Stack pila)
+        public While(ref Stack<StackElement> pila)
         {
             pila.Pop();
-            bloque = (StackElement)pila.Pop(); //quita bloque
+            bloque = pila.Pop(); //quita bloque
             pila.Pop();
             pila.Pop(); //quita )
             pila.Pop();
-            expresion = (StackElement)pila.Pop(); //quita expresion
+            expresion = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita (
             pila.Pop();
@@ -209,20 +224,20 @@ namespace CompiladorTraductores2
         StackElement bloque;
         StackElement expresion;
 
-        public DoWhile(ref Stack pila)
+        public DoWhile(ref Stack<StackElement> pila)
         {
             pila.Pop();
             pila.Pop(); //quita ;
             pila.Pop();
             pila.Pop(); //quita )
             pila.Pop();
-            expresion = (StackElement)pila.Pop(); //quita exprecion
+            expresion = pila.Pop(); //quita exprecion
             pila.Pop();
             pila.Pop(); //quita (
             pila.Pop();
             pila.Pop(); //quita el while
             pila.Pop();
-            bloque = (StackElement)pila.Pop(); //quita bloque
+            bloque = pila.Pop(); //quita bloque
             pila.Pop();
             pila.Pop(); //quita do
         }
@@ -236,18 +251,18 @@ namespace CompiladorTraductores2
         StackElement expresion3;
         StackElement id;
 
-        public For(ref Stack pila)
+        public For(ref Stack<StackElement> pila)
         {
             pila.Pop();
-            senbloque = (StackElement)pila.Pop(); //quita senteciabloque
+            senbloque = pila.Pop(); //quita senteciabloque
             pila.Pop();
-            expresion3 = (StackElement)pila.Pop(); //quita expresion
+            expresion3 = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita ;
             pila.Pop();
-            expresion2 = (StackElement)pila.Pop(); //quita expresion
+            expresion2 = pila.Pop(); //quita expresion
             pila.Pop();
-            expresion1 = (StackElement)pila.Pop(); //quita expresion
+            expresion1 = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita =
             pila.Pop();
@@ -260,12 +275,12 @@ namespace CompiladorTraductores2
     public class Return : StackElement
     {
         StackElement expresion;
-        public Return(ref Stack pila)
+        public Return(ref Stack<StackElement> pila)
         {
             pila.Pop();
             pila.Pop(); //quita ;
             pila.Pop();
-            expresion = (StackElement)pila.Pop(); //quita expresion
+            expresion = pila.Pop(); //quita expresion
             pila.Pop();
             pila.Pop(); //quita return
         }
@@ -283,12 +298,12 @@ namespace CompiladorTraductores2
     {
         StackElement id;
         StackElement argumentos;
-        public LlamadaFunc(ref Stack pila)
+        public LlamadaFunc(ref Stack<StackElement> pila)
         {
             pila.Pop();
             pila.Pop();//quita )
             pila.Pop();
-            argumentos = (StackElement)pila.Pop();//quita exprecion
+            argumentos = pila.Pop();//quita exprecion
             pila.Pop();
             pila.Pop();//quita (
             pila.Pop();
@@ -300,10 +315,10 @@ namespace CompiladorTraductores2
     {
         StackElement der;
 
-        public Operacion1(ref Stack pila)
+        public Operacion1(ref Stack<StackElement> pila)
         {
             pila.Pop();
-            der = (StackElement)pila.Pop();//quita exprsion
+            der = pila.Pop();//quita exprsion
             pila.Pop();
             symbol = ((Terminal)pila.Pop()).symbol;//quita el operador
         }
@@ -313,14 +328,14 @@ namespace CompiladorTraductores2
     {
         StackElement der;
         StackElement izq;
-        public Operacion2(ref Stack pila)
+        public Operacion2(ref Stack<StackElement> pila)
         {
             pila.Pop();
-            der = (StackElement)pila.Pop();//quita exprsion
+            der = pila.Pop();//quita exprsion
             pila.Pop();
             symbol = ((Terminal)pila.Pop()).symbol;//quita el operador
             pila.Pop();
-            izq = (StackElement)pila.Pop();//quita expresion
+            izq = pila.Pop();//quita expresion
 
         }
     }

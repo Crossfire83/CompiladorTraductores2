@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Collections;
+using System.Text;
 
 namespace CompiladorTraductores2
 {
@@ -10,52 +10,70 @@ namespace CompiladorTraductores2
     {
         public Lexical l;
         public DataGridView SymbolsTable;
-        public Stack SyntacticalStack;
+        public Stack<StackElement> SyntacticalStack;
         public List<List<int>> LRTable;
-        internal Rule[] Rules;
+        private List<Rule> Rules;
 
         public Sintactical(ref DataGridView SymbolsTable) {
             this.SymbolsTable = SymbolsTable;
             this.SymbolsTable.Rows.Clear();
-            SyntacticalStack = new Stack();
+            SyntacticalStack = new Stack<StackElement>();
         }
 
         internal void SetLRTable(string[] lines)
         {
-            List<List<int>> table = new List<List<int>>();
-
-            for (int index = 0; index < lines.Length; index++)
+            int numberOfRules;
+            if (Int32.TryParse(lines[0], out numberOfRules))
             {
-                table.Add(new List<int>());
-                lines[index] = lines[index].Trim();
-                string[] cols = lines[index].Split('\t');
-                int[] intcols = cols.Select(s => Int32.Parse(s)).ToArray();
-                for (int index1 = 0; index1 < intcols.Length; index1++)
+                Rules = new List<Rule>(numberOfRules);
+                for (int i = 1; i <= numberOfRules; i++)
                 {
-                    table[index].Add(intcols[index1]);
+                    string temp = lines[i].Trim();
+                    string[] cols = temp.Split('\t');
+                    Rule rule = new Rule() { Id = Int32.Parse(cols[0]), TotalProductions = Int32.Parse(cols[1]), RuleName = cols[2] };
+                    Rules.Add(rule);
+                }
+
+                string dimensions = lines[numberOfRules + 1];
+                string[] lineTemp = dimensions.Split('\t');
+                int x, y;
+                if (Int32.TryParse(lineTemp[0], out y)) {
+                    if (Int32.TryParse(lineTemp[1], out x))
+                    {
+                        //Creacion de tabla LR
+                        LRTable = new List<List<int>>();
+                        for (int i = 0; i < y; i++) {
+                            LRTable.Add(new List<int>());
+                        }
+
+                        //Agregar valores a la tabla LR
+                        int lineZero = numberOfRules + 2;
+                        for (int i = lineZero; i < lines.Length; i++) {
+                            lines[i] = lines[i].Trim();
+                            string[] cols = lines[i].Split('\t');
+                            int[] intcols = cols.Select(s => Int32.Parse(s)).ToArray();
+                            foreach (int value in intcols) {
+                                LRTable[i - lineZero].Add(value);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new FormatException("El archivo no está en el formato aceptado.");
+                    }
+                }
+                else
+                {
+                    throw new FormatException("El archivo no está en el formato aceptado.");
                 }
             }
-            this.LRTable = table;
-        }
-
-        public void SetRules(string text) {
-            Rule[] data = new Rule[51];
-            string[] Lines = text.Split('\n');
-            int index = 0;
-            foreach (string line in Lines)
+            else
             {
-                string temp = line.Trim();
-
-                string[] cols = temp.Split('\t');
-
-                Rule rule = new Rule() { Id = Int32.Parse(cols[0]), TotalProductions = Int32.Parse(cols[1]), RuleName = cols[2] };
-                data[index] = rule;
-                index++;
+                throw new FormatException("El archivo no está en el formato aceptado.");
             }
-            Rules = data;
         }
 
-        public void Analiza(string text) {
+        public string Analiza(string text) {
             l = new Lexical(text);
 
             //while (!s.l.IsFinished())
@@ -111,10 +129,10 @@ namespace CompiladorTraductores2
                     }
                     SymbolsTable.Rows.Add(row);
                 }
-                x = ((State)SyntacticalStack.Peek()).transicion;
-                y = (int)currentSymbol.type;
+                y = ((State)SyntacticalStack.Peek()).transicion;
+                x = (int)currentSymbol.type;
 
-                r = LRTable[x][y];
+                r = LRTable[y][x];
 
                 if (r > 0)
                 {
@@ -139,9 +157,9 @@ namespace CompiladorTraductores2
                         case 20: //<Sentencias> ::= <Sentencia> <Sentencias>
                         case 32: //<Argumentos> ::= <Expresion> <ListaArgumentos> 
                             SyntacticalStack.Pop(); //quita estado
-                            StackElement aux = (StackElement)SyntacticalStack.Pop(); //quita <definiciones>
+                            StackElement aux = SyntacticalStack.Pop(); //quita <definiciones>
                             SyntacticalStack.Pop(); //quita estado
-                            element = (StackElement)SyntacticalStack.Pop(); //quita <definicion>
+                            element = SyntacticalStack.Pop(); //quita <definicion>
                             if (element != null)
                                 element.Next = aux;
                             break;
@@ -155,7 +173,7 @@ namespace CompiladorTraductores2
                         case 40: //<SentenciaBloque> ::= <Bloque> 
                         case 50: //<Expresion> ::= <Atomo>
                             SyntacticalStack.Pop();//quita estado
-                            element = (StackElement)SyntacticalStack.Pop(); //quita defvar
+                            element = SyntacticalStack.Pop(); //quita defvar
                             break;
 
                         case 6: // <DefVar> ::= tipo id <ListaVar>
@@ -164,7 +182,7 @@ namespace CompiladorTraductores2
 
                         case 8:  //<ListaVar> ::= , id <ListaVar>
                             SyntacticalStack.Pop(); //quita estado
-                            StackElement lvar = ((StackElement)SyntacticalStack.Pop());
+                            StackElement lvar = (SyntacticalStack.Pop());
                             SyntacticalStack.Pop(); //quita estado
                             element = new Identificador(((Terminal)SyntacticalStack.Pop()).element.symbol)
                             {
@@ -194,7 +212,7 @@ namespace CompiladorTraductores2
                             SyntacticalStack.Pop(); //quita estado
                             SyntacticalStack.Pop(); //quita }
                             SyntacticalStack.Pop(); //quita estado
-                            element = ((StackElement)SyntacticalStack.Pop()); //quita <deflocales> o <sentencias>
+                            element = (SyntacticalStack.Pop()); //quita <deflocales> o <sentencias>
                             SyntacticalStack.Pop();
                             SyntacticalStack.Pop(); //quita la {
                             break;
@@ -227,21 +245,21 @@ namespace CompiladorTraductores2
                             SyntacticalStack.Pop();
                             SyntacticalStack.Pop(); //quita ;
                             SyntacticalStack.Pop();
-                            element = ((StackElement)SyntacticalStack.Pop()); //quita llamadafunc
+                            element = (SyntacticalStack.Pop()); //quita llamadafunc
                             break;
 
                         case 29: //<Otro> ::= else <SentenciaBloque> 
                             SyntacticalStack.Pop();
-                            element = ((StackElement)SyntacticalStack.Pop()); //quita sentencia bloque
+                            element = SyntacticalStack.Pop(); //quita sentencia bloque
                             SyntacticalStack.Pop();
                             SyntacticalStack.Pop(); //quita el else
                             break;
 
                         case 34: // <ListaArgumentos> ::= , <Expresion> <ListaArgumentos> 
                             SyntacticalStack.Pop();
-                            aux = ((StackElement)SyntacticalStack.Pop()); //quita la lsta de argumentos
+                            aux = (SyntacticalStack.Pop()); //quita la lsta de argumentos
                             SyntacticalStack.Pop();
-                            element = ((StackElement)SyntacticalStack.Pop()); //quita expresion
+                            element = (SyntacticalStack.Pop()); //quita expresion
                             SyntacticalStack.Pop();
                             SyntacticalStack.Pop(); //quita la ,
                             element.Next = aux;
@@ -249,7 +267,7 @@ namespace CompiladorTraductores2
 
                         case 36:
                             SyntacticalStack.Pop();
-                            element = new Identificador(((Terminal)SyntacticalStack.Pop()).element.symbol);
+                            element = new Identificador(SyntacticalStack.Pop().symbol);
                             break;
 
                         case 37:
@@ -274,9 +292,9 @@ namespace CompiladorTraductores2
                             element = new Operacion2(ref SyntacticalStack);
                             break;
 
-                        //aqui cae R2,R7,R10,R12,R15,R19,R28,R31,R33,
+                        //aqui cae R2, R7, R10, R12, R15, R19, R28, R31, R33
                         default:
-                            pops = Rules.ElementAt(r).TotalProductions;
+                            pops = Rules.ElementAt(r - 1).TotalProductions;
 
                             if (pops > 0)
                             {
@@ -289,13 +307,13 @@ namespace CompiladorTraductores2
                             }
                             break;
                     }
-                    x = ((State)SyntacticalStack.Peek()).transicion;
+                    y = ((State)SyntacticalStack.Peek()).transicion;
 
-                    y = Rules.ElementAt(r).Id;
-                    //NonTerminal nt = new NonTerminal(y)
-                    SyntacticalStack.Push(element);
+                    x = Rules.ElementAt(r - 1).Id;
+                    NonTerminal nt = new NonTerminal(x);
+                    SyntacticalStack.Push(nt);
 
-                    r = LRTable[x][y];
+                    r = LRTable[y][x];
                     SyntacticalStack.Push(new State(r));
                     newSymbol = false;
                     //Root = element
@@ -304,6 +322,12 @@ namespace CompiladorTraductores2
                     error = true;
                 
             }
+
+            StringBuilder result = new StringBuilder();
+            if (error) {
+                result.Append("Error en símbolo: " + currentSymbol.value + "\r\n");
+            }
+            return result.ToString();
         }
     }
 
