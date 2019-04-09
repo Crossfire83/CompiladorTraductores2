@@ -14,6 +14,8 @@ namespace CompiladorTraductores2
         {
             return symbol.ToString();
         }
+
+        public virtual string imprimeTipo() { return "Nodo"; }
     }
     public class State : StackElement
     {
@@ -23,6 +25,11 @@ namespace CompiladorTraductores2
         public override string ToString()
         {
             return "Y: " + transicion.ToString();
+        }
+
+        public override string imprimeTipo()
+        {
+            return transicion.ToString();
         }
     }
 
@@ -43,6 +50,11 @@ namespace CompiladorTraductores2
         {
             return element.ToString();
         }
+
+        public override string imprimeTipo()
+        {
+            return " " + element.symbol.name + " ";
+        }
     }
 
     public class NonTerminal : StackElement
@@ -59,6 +71,58 @@ namespace CompiladorTraductores2
         public override string ToString()
         {
             return "Columna: " + columna.ToString();
+        }
+
+        public override string imprimeTipo()
+        {
+            switch (columna) {
+                case 24:
+                    return " programa ";
+                case 25:
+                    return " Definiciones ";
+                case 26:
+                    return " Definicion ";
+                case 27:
+                    return " DefVar ";
+                case 28:
+                    return " ListaVar ";
+                case 29:
+                    return " DefFunc ";
+                case 30:
+                    return " Parametros ";
+                case 31:
+                    return " ListaParam ";
+                case 32:
+                    return " BloqFunc ";
+                case 33:
+                    return " DefLocales ";
+                case 34:
+                    return " DefLocal ";
+                case 35:
+                    return " Sentencias ";
+                case 36:
+                    return " Sentencia ";
+                case 37:
+                    return " Otro ";
+                case 38:
+                    return " Bloque ";
+                case 39:
+                    return " ValorRegresa ";
+                case 40:
+                    return " Argumentos ";
+                case 41:
+                    return " ListaArgumentos ";
+                case 42:
+                    return " Termino ";
+                case 43:
+                    return " LlamadaFunc ";
+                case 44:
+                    return " SentenciaBloque ";
+                case 45:
+                    return " Expresion ";
+                default:
+                    return " NoTerminal ";
+            }
         }
     }
 
@@ -77,6 +141,11 @@ namespace CompiladorTraductores2
         {
             symbol = s;
         }
+
+        public override string imprimeTipo()
+        {
+            return "id";
+        }
     }
 
     public class Tipo : StackElement
@@ -84,6 +153,11 @@ namespace CompiladorTraductores2
         public Tipo(Symbol s)
         {
             symbol = s;
+        }
+
+        public override string imprimeTipo()
+        {
+            return "tipo";
         }
     }
 
@@ -113,6 +187,11 @@ namespace CompiladorTraductores2
         public DefVar()
         {
         }
+
+        public override string imprimeTipo()
+        {
+            return "DefVar";
+        }
     }
 
     public class DefFunc : StackElement
@@ -138,6 +217,11 @@ namespace CompiladorTraductores2
             tipo = new Tipo(((Terminal)pila.Pop()).symbol);//quita el tipo
             //id.symbol.name = tipo.symbol.name;
         }
+
+        public override string imprimeTipo()
+        {
+            return "DefFunc";
+        }
     }
 
     public class Parametros : StackElement
@@ -158,6 +242,11 @@ namespace CompiladorTraductores2
             tipo = new Tipo(((Terminal)pila.Pop()).symbol);//quita el tipo
             //id.symbol.name = tipo.symbol.name;
         }
+
+        public override string imprimeTipo()
+        {
+            return "Parametros";
+        }
     }
 
     public class Asignacion : StackElement
@@ -174,6 +263,11 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita =
             pila.Pop();
             id = new Identificador(((Terminal)pila.Pop()).symbol); //quita id
+        }
+
+        public override string imprimeTipo()
+        {
+            return "Asignacion";
         }
     }
 
@@ -197,6 +291,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             pila.Pop(); //quita if
         }
+
+        public override string imprimeTipo()
+        {
+            return "if";
+        }
     }
 
     public class While : StackElement
@@ -216,6 +315,11 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita (
             pila.Pop();
             pila.Pop(); //quita while
+        }
+
+        public override string imprimeTipo()
+        {
+            return "while";
         }
     }
 
@@ -240,6 +344,11 @@ namespace CompiladorTraductores2
             bloque = pila.Pop(); //quita bloque
             pila.Pop();
             pila.Pop(); //quita do
+        }
+
+        public override string imprimeTipo()
+        {
+            return "DoWhile";
         }
     }
 
@@ -270,6 +379,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             pila.Pop(); //quita for
         }
+
+        public override string imprimeTipo()
+        {
+            return "for";
+        }
     }
 
     public class Return : StackElement
@@ -284,6 +398,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             pila.Pop(); //quita return
         }
+
+        public override string imprimeTipo()
+        {
+            return "return";
+        }
     }
 
     public class Constante : StackElement
@@ -291,6 +410,11 @@ namespace CompiladorTraductores2
         public Constante(Symbol s)
         {
             symbol = s;
+        }
+
+        public override string imprimeTipo()
+        {
+            return "constante";
         }
     }
 
@@ -309,6 +433,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             id = new Identificador(((Terminal)pila.Pop()).symbol);//quita id
         }
+
+        public override string imprimeTipo()
+        {
+            return "LLamadaFunc";
+        }
     }
 
     public class Operacion1 : StackElement
@@ -321,6 +450,11 @@ namespace CompiladorTraductores2
             der = pila.Pop();//quita exprsion
             pila.Pop();
             symbol = ((Terminal)pila.Pop()).symbol;//quita el operador
+        }
+
+        public override string imprimeTipo()
+        {
+            return "Op1";
         }
     }
 
@@ -337,6 +471,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             izq = pila.Pop();//quita expresion
 
+        }
+
+        public override string imprimeTipo()
+        {
+            return "Op2";
         }
     }
 }

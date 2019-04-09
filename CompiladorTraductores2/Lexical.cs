@@ -62,21 +62,21 @@ namespace CompiladorTraductores2
                         else if (c == '+' || c == '-')
                         {
                             temp.Append(c);
-                            result.name = "Add Operator";
+                            result.name = "opSuma";
                             result.type = SymbolType.opSuma;
                             cont = false;
                         }
                         else if (c == '*' || c == '/')
                         {
                             temp.Append(c);
-                            result.name = "Multiplication Operator";
+                            result.name = "opMul";
                             result.type = SymbolType.opMul;
                             cont = false;
                         }
                         else if (c == '<' || c == '>')
                         {
                             temp.Append(c);
-                            result.name = "Relational Operator";
+                            result.name = "opRelac";
                             result.type = SymbolType.opRelac;
                             state = 3;
                         }
@@ -92,7 +92,7 @@ namespace CompiladorTraductores2
                             if (c == '&')
                             {
                                 temp.Append(c);
-                                result.name = "And Operator";
+                                result.name = "opAnd";
                                 result.type = SymbolType.opAnd;
                             }
                             else
@@ -110,7 +110,7 @@ namespace CompiladorTraductores2
                             if (c == '|')
                             {
                                 temp.Append(c);
-                                result.name = "Or Operator";
+                                result.name = "opOr";
                                 result.type = SymbolType.opOr;
                             }
                             else
@@ -124,42 +124,42 @@ namespace CompiladorTraductores2
                         else if (c == '(')
                         {
                             temp.Append(c);
-                            result.name = "Opening Parenthesis";
+                            result.name = "(";
                             result.type = SymbolType.OpenParenthesis;
                             cont = false;
                         }
                         else if (c == ')')
                         {
                             temp.Append(c);
-                            result.name = "Closing Parenthesis";
+                            result.name = ")";
                             result.type = SymbolType.CloseParenthesis;
                             cont = false;
                         }
                         else if (c == '{')
                         {
                             temp.Append(c);
-                            result.name = "Opening Bracket";
+                            result.name = "{";
                             result.type = SymbolType.OpenBracket;
                             cont = false;
                         }
                         else if (c == '}')
                         {
                             temp.Append(c);
-                            result.name = "Closing Bracket";
+                            result.name = "}";
                             result.type = SymbolType.CloseBracket;
                             cont = false;
                         }
                         else if (c == ';')
                         {
                             temp.Append(c);
-                            result.name = "SemiColon";
+                            result.name = ";";
                             result.type = SymbolType.SemiColon;
                             cont = false;
                         }
                         else if (c == ',')
                         {
                             temp.Append(c);
-                            result.name = "Comma";
+                            result.name = ",";
                             result.type = SymbolType.Comma;
                             cont = false;
                         }
@@ -173,7 +173,7 @@ namespace CompiladorTraductores2
                         else if (c == '$')
                         {
                             temp.Append(c);
-                            result.name = "Currency";
+                            result.name = "$";
                             result.type = SymbolType.Currency;
                             cont = false;
                         }
@@ -233,7 +233,7 @@ namespace CompiladorTraductores2
                         if (c == '=')
                         {
                             temp.Append(c);
-                            result.name = "Relational Operator";
+                            result.name = "opRelac";
                             result.type = SymbolType.opRelac;
                         }
                         else
@@ -247,19 +247,19 @@ namespace CompiladorTraductores2
                         {
                             temp.Append(c);
                             cont = false;
-                            result.name = "Equality Operator";
+                            result.name = "opIgualdad";
                             result.type = SymbolType.opIgualdad;
                         }
                         else
                         {
                             if (temp.ToString() == "=")
                             {
-                                result.name = "Assignation Operator";
+                                result.name = "=";
                                 result.type = SymbolType.Assignation;
                             }
                             else if (temp.ToString() == "!")
                             {
-                                result.name = "Not Operator";
+                                result.name = "!";
                                 result.type = SymbolType.opNot;
                             }
                             cont = false;

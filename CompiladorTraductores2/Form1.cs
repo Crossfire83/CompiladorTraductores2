@@ -18,6 +18,8 @@ namespace CompiladorTraductores2
         private void btnParse_Click(object sender, EventArgs e)
         {
             SymbolsTable.Rows.Clear();
+            StackTextBox.Text = String.Empty;
+            ResultTextBox.Text = String.Empty;
             if (String.IsNullOrWhiteSpace(TablePath)) {
                 MessageBox.Show("Por favor cargar archivo con reglas de producción");
                 return;
@@ -28,11 +30,12 @@ namespace CompiladorTraductores2
                 string result = s.Analiza(sourceCodeTxt.Text);
                 if (String.IsNullOrWhiteSpace(result))
                 {
-                    ResultLabel.Text = "Análisis lexico y sintactico terminado.";
+                    ResultTextBox.Text = "Análisis lexico y sintactico terminado.";
                 }
                 else {
-                    ResultLabel.Text = result;
+                    ResultTextBox.Text = result;
                 }
+                StackTextBox.Text = s.stack.ToString();
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.ToString());

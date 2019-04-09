@@ -13,11 +13,10 @@ namespace CompiladorTraductores2
         public Stack<StackElement> SyntacticalStack;
         public List<List<int>> LRTable;
         private List<Rule> Rules;
+        public StringBuilder stack;
 
         public Sintactical(ref DataGridView SymbolsTable) {
             this.SymbolsTable = SymbolsTable;
-            this.SymbolsTable.Rows.Clear();
-            SyntacticalStack = new Stack<StackElement>();
         }
 
         internal void SetLRTable(string[] lines)
@@ -76,26 +75,8 @@ namespace CompiladorTraductores2
         public string Analiza(string text) {
             l = new Lexical(text);
 
-            //while (!s.l.IsFinished())
-            //{
-            //    Symbol sym = s.l.NextSymbol();
-            //    DataGridViewRow row = new DataGridViewRow();
-
-            //    row.CreateCells(SymbolsTable);
-            //    row.Cells[0].Value = sym.value;
-            //    row.Cells[1].Value = sym.name;
-            //    row.Cells[2].Value = ((int)sym.type).ToString();
-            //    if (((int)sym.type) == -1)
-            //    {
-            //        foreach (DataGridViewCell cell in row.Cells)
-            //        {
-            //            cell.Style.BackColor = System.Drawing.Color.Red;
-            //            cell.Style.ForeColor = System.Drawing.Color.White;
-            //        }
-            //    }
-            //    SymbolsTable.Rows.Add(row);
-            //}
-
+            stack = new StringBuilder();
+            SyntacticalStack = new Stack<StackElement>();
             int x = 0;  //Fila
             int y = 0;  //Columna
             int r = 0;  //Resultado (regla, desplazamiento o aceptacion)
@@ -140,6 +121,7 @@ namespace CompiladorTraductores2
                     SyntacticalStack.Push(new Terminal(currentSymbol));
                     SyntacticalStack.Push(new State(r));
                     newSymbol = true;
+                    generatePrintedStack();
                 }
                 else if (r < 0) //Regla
                 {
@@ -316,6 +298,7 @@ namespace CompiladorTraductores2
                     r = LRTable[y][x];
                     SyntacticalStack.Push(new State(r));
                     newSymbol = false;
+                    generatePrintedStack();
                     //Root = element
                 }
                 else
@@ -328,6 +311,19 @@ namespace CompiladorTraductores2
                 result.Append("Error en símbolo: " + currentSymbol.value + "\r\n");
             }
             return result.ToString();
+        }
+
+        private void generatePrintedStack() {
+            Stack<StackElement> temp = new Stack<StackElement>();
+            foreach (StackElement em in SyntacticalStack)
+            {
+                temp.Push(em);
+            }
+            foreach (StackElement em in temp)
+            {
+                stack.Append(em.imprimeTipo());
+            }
+            stack.Append(Environment.NewLine);
         }
     }
 
