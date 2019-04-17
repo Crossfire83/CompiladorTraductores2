@@ -81,7 +81,7 @@ namespace CompiladorTraductores2
             int y = 0;  //Columna
             int r = 0;  //Resultado (regla, desplazamiento o aceptacion)
 
-            int pops = 0;   //Cantidad de elementos que produce la regla
+            //int pops = 0;   //Cantidad de elementos que produce la regla
             bool error = false; //Bandera que detiene el ciclo
             bool newSymbol = true;  //Decide si se necesita un nuevo simbolo del Lexico o no
             SyntacticalStack.Push(new State(0));
@@ -121,9 +121,9 @@ namespace CompiladorTraductores2
                     SyntacticalStack.Push(new Terminal(currentSymbol));
                     SyntacticalStack.Push(new State(r));
                     newSymbol = true;
-                    generatePrintedStack();
+                    GeneratePrintedStack();
                 }
-                else if (r < 0) //Regla
+                else if (r < 0) //Reglas
                 {
                     r = Math.Abs(r) - 1;
                     if (r == 0)
@@ -131,75 +131,87 @@ namespace CompiladorTraductores2
                         //Cadena Aceptada
                         break;
                     }
-                    StackElement element = null;
+                    NonTerminal element = null;
                     switch (r)
                     {
-                        case 3: //<Definiciones> ::= <Definicion> <Definiciones>
-                        case 16: //<DefLocales> ::= <DefLocal> <DefLocales> 	
-                        case 20: //<Sentencias> ::= <Sentencia> <Sentencias>
-                        case 32: //<Argumentos> ::= <Expresion> <ListaArgumentos> 
-                            SyntacticalStack.Pop(); //quita estado
-                            StackElement aux = SyntacticalStack.Pop(); //quita <definiciones>
-                            SyntacticalStack.Pop(); //quita estado
-                            element = SyntacticalStack.Pop(); //quita <definicion>
-                            if (element != null)
-                                element.Next = aux;
-                            break;
                         case 1: //<programa> ::= <Definiciones> 
-                        case 4: //<Definicion> ::= <DefVar>
-                        case 5: //<Definicion> ::= <DefFunc> 
-                        case 17: //<DefLocal> ::= <DefVar> 
-                        case 18: //<DefLocal> ::= <Sentencia> 
-                        case 35: //<Atomo> ::= <LlamadaFunc> 
-                        case 39: //<SentenciaBloque> ::= <Sentencia> 
-                        case 40: //<SentenciaBloque> ::= <Bloque> 
-                        case 50: //<Expresion> ::= <Atomo>
-                            SyntacticalStack.Pop();//quita estado
-                            element = SyntacticalStack.Pop(); //quita defvar
+                            element = new Programa(ref SyntacticalStack);
                             break;
 
-                        case 6: // <DefVar> ::= tipo id <ListaVar>
+                        case 2: //<Definiciones> ::= \e 
+                            element = new Definiciones();
+                            break;
+
+                        case 3: //<Definiciones> ::= <Definicion> <Definiciones>
+                            element = new Definiciones(ref SyntacticalStack);
+                            break;
+
+                        case 4: //<Definicion> ::= <DefVar>
+                        case 5: //<Definicion> ::= <DefFunc> 
+                            element = new Definicion(ref SyntacticalStack);
+                            break;
+
+                        case 6: //<DefVar> ::= tipo identificador <ListaVar> ;
                             element = new DefVar(ref SyntacticalStack);
                             break;
 
+                        case 7: //<ListaVar> ::= \e
+                            element = new ListaVar();
+                            break;
+
                         case 8:  //<ListaVar> ::= , id <ListaVar>
-                            SyntacticalStack.Pop(); //quita estado
-                            StackElement lvar = (SyntacticalStack.Pop());
-                            SyntacticalStack.Pop(); //quita estado
-                            element = new Identificador(((Terminal)SyntacticalStack.Pop()).element.symbol)
-                            {
-                                Next = lvar
-                            }; //quita id
-                            SyntacticalStack.Pop(); //quita estado
-                            SyntacticalStack.Pop(); //quita la coma
+                            element = new ListaVar(ref SyntacticalStack);
                             break;
 
                         case 9: //<DefFunc> ::= tipo id ( <Parametros> ) <BloqFunc>
                             element = new DefFunc(ref SyntacticalStack);
                             break;
 
+                        case 10: //<Parametros> ::= \e
+                            element = new Parametros();
+                            break;
+
                         case 11: //<Parametros> ::= tipo id <ListaParam>
                             element = new Parametros(ref SyntacticalStack);
                             break;
 
+                        case 12: //R12 <ListaParam> ::= \e
+                            element = new ListaParam();
+                            break;
+
                         case 13: //<ListaParam> ::= , tipo id <ListaParam>
                             element = new Parametros(ref SyntacticalStack);
-                            SyntacticalStack.Pop(); //quita estado
-                            SyntacticalStack.Pop(); //quita la coma
                             break;
 
                         case 14: //<BloqFunc> ::= { <DefLocales> }
-                        case 30: //<Bloque> ::= { <Sentencias> } 
-                        case 41: //<Expresion> ::= ( <Expresion> ) 
-                            SyntacticalStack.Pop(); //quita estado
-                            SyntacticalStack.Pop(); //quita }
-                            SyntacticalStack.Pop(); //quita estado
-                            element = (SyntacticalStack.Pop()); //quita <deflocales> o <sentencias>
-                            SyntacticalStack.Pop();
-                            SyntacticalStack.Pop(); //quita la {
+                            element = new BloqFunc(ref SyntacticalStack);
                             break;
 
-                        case 21: //<Sentencia> ::= id = <Expresion>
+                        case 15: //<DefLocales> ::= \e
+                            element = new DefLocales();
+                            break;
+
+                        case 16: //<DefLocales> ::= <DefLocal> <DefLocales> 	
+                            element = new DefLocales(ref SyntacticalStack);
+                            break;
+
+                        case 17: //<DefLocal> ::= <DefVar> 
+                            element = new DefLocal(ref SyntacticalStack);
+                            break;
+
+                        case 18: //<DefLocal> ::= <Sentencia> 
+                            element = new DefLocal(ref SyntacticalStack);
+                            break;
+
+                        case 19: //<Sentencias> ::= \e
+                            element = new Sentencias();
+                            break;
+
+                        case 20: //<Sentencias> ::= <Sentencia> <Sentencias>
+                            element = new Sentencias(ref SyntacticalStack);
+                            break;
+
+                        case 21: //<Sentencia> ::= identificador = <Expresion> ;
                             element = new Asignacion(ref SyntacticalStack);
                             break;
 
@@ -211,94 +223,113 @@ namespace CompiladorTraductores2
                             element = new While(ref SyntacticalStack);
                             break;
 
-                        case 24: //<Sentencia> ::= do <Bloque> while ( <Expresion> )
-                            element = new DoWhile(ref SyntacticalStack);
-                            break;
-
-                        case 25: //<Sentencia> ::= for id = <Expresion> : <Expresion> : <Expresion> <SentenciaBloque>
-                            element = new For(ref SyntacticalStack);
-                            break;
-
-                        case 26: //<Sentencia> ::= return <Expresion>
+                        case 24: //<Sentencia> ::= return <ValorRegresa> ;
                             element = new Return(ref SyntacticalStack);
                             break;
 
-                        case 27: //<Sentencia> ::= <LlamadaFunc>
-                            SyntacticalStack.Pop();
-                            SyntacticalStack.Pop(); //quita ;
-                            SyntacticalStack.Pop();
-                            element = (SyntacticalStack.Pop()); //quita llamadafunc
+                        case 25: //<Sentencia> ::= <LlamadaFunc> ;
+                            element = new SentenciaLLama(ref SyntacticalStack);
                             break;
 
-                        case 29: //<Otro> ::= else <SentenciaBloque> 
-                            SyntacticalStack.Pop();
-                            element = SyntacticalStack.Pop(); //quita sentencia bloque
-                            SyntacticalStack.Pop();
-                            SyntacticalStack.Pop(); //quita el else
+                        case 26: //<Otro> ::= \e
+                            element = new Otro();
                             break;
 
-                        case 34: // <ListaArgumentos> ::= , <Expresion> <ListaArgumentos> 
-                            SyntacticalStack.Pop();
-                            aux = (SyntacticalStack.Pop()); //quita la lsta de argumentos
-                            SyntacticalStack.Pop();
-                            element = (SyntacticalStack.Pop()); //quita expresion
-                            SyntacticalStack.Pop();
-                            SyntacticalStack.Pop(); //quita la ,
-                            element.Next = aux;
+                        case 27: //<Otro> ::= else <SentenciaBloque>
+                            element = new Otro(ref SyntacticalStack);
                             break;
 
-                        case 36:
-                            SyntacticalStack.Pop();
-                            element = new Identificador(SyntacticalStack.Pop().symbol);
+                        case 28: //<Bloque> ::= { <Sentencias> }
+                            element = new Bloque(ref SyntacticalStack);
                             break;
 
-                        case 37:
-                            SyntacticalStack.Pop();
-                            element = new Constante(((Terminal)SyntacticalStack.Pop()).element.symbol);
+                        case 29: //<ValorRegresa> ::= \e
+                            element = new ValorRegresa();
                             break;
-                        case 38:
+
+                        case 30: //<ValorRegresa> ::= <Expresion>
+                            element = new ValorRegresa(ref SyntacticalStack);
+                            break;
+
+                        case 31: //<Argumentos> ::= \e
+                            element = new Argumentos();
+                            break;
+
+                        case 32: //<Argumentos> ::= <Expresion> <ListaArgumentos> 
+                            element = new Argumentos(ref SyntacticalStack);
+                            break;
+
+                        case 33: //<ListaArgumentos> ::= \e
+                            element = new ListaArgumentos();
+                            break;
+
+                        case 34: //<ListaArgumentos> ::= , <Expresion> <ListaArgumentos> 
+                            element = new ListaArgumentos(ref SyntacticalStack);
+                            break;
+
+                        case 35: //<Termino> ::= <LlamadaFunc>
+                        case 36: //<Termino> ::= identificador
+                        case 37: //<Termino> ::= entero
+                        case 38: //<Termino> ::= real
+                        case 39: //<Termino> ::= cadena
+                            element = new Termino(ref SyntacticalStack);
+                            break;
+
+                        case 40: //<LlamadaFunc> ::= identificador ( <Argumentos> )
                             element = new LlamadaFunc(ref SyntacticalStack);
                             break;
 
-                        case 42: //<Expresion> ::= opSuma <Expresion>
-                        case 43: //<Expresion> ::= opNot <Expresion>
+                        case 41: //<SentenciaBloque> ::= <Sentencia> 
+                        case 42: //<SentenciaBloque> ::= <Bloque>
+                            element = new SentenciaBloque(ref SyntacticalStack);
+                            break;
+
+                        case 43: //<Expresion> ::= ( <Expresion> )
+                            element = new Expresion(ref SyntacticalStack);
+                            break;
+
+                        case 44: //<Expresion> ::= opSuma <Expresion>
+                        case 45: //<Expresion> ::= opNot <Expresion>
                             element = new Operacion1(ref SyntacticalStack);
                             break;
 
-                        case 44: //<Expresion> ::= <Expresion> opMul <Expresion>
-                        case 45: //<Expresion> ::= <Expresion> opSuma <Expresion>
-                        case 46: //<Expresion> ::= <Expresion> opRelac <Expresion>
-                        case 47: //<Expresion> ::= <Expresion> opIgualdad <Expresion>
-                        case 48: //<Expresion> ::= <Expresion> opAnd <Expresion>
-                        case 49: //<Expresion> ::= <Expresion> opOr <Expresion>
+                        case 46: //<Expresion> ::= <Expresion> opMul <Expresion>
+                        case 47: //<Expresion> ::= <Expresion> opSuma <Expresion>
+                        case 48: //<Expresion> ::= <Expresion> opRelac <Expresion>
+                        case 49: //<Expresion> ::= <Expresion> opIgualdad <Expresion>
+                        case 50: //<Expresion> ::= <Expresion> opAnd <Expresion>
+                        case 51: //<Expresion> ::= <Expresion> opOr <Expresion>
                             element = new Operacion2(ref SyntacticalStack);
                             break;
 
-                        //aqui cae R2, R7, R10, R12, R15, R19, R28, R31, R33
-                        default:
-                            pops = Rules.ElementAt(r - 1).TotalProductions;
+                        case 52: //<Expresion> ::= <Termino>
+                            element = new Expresion(ref SyntacticalStack);
+                            break;
 
-                            if (pops > 0)
-                            {
-                                while (pops > 0)
-                                {
-                                    SyntacticalStack.Pop();
-                                    SyntacticalStack.Pop();
-                                    pops--;
-                                }
-                            }
+                        default:
+                            //pops = Rules.ElementAt(r - 1).TotalProductions;
+
+                            //if (pops > 0)
+                            //{
+                            //    while (pops > 0)
+                            //    {
+                            //        SyntacticalStack.Pop();
+                            //        SyntacticalStack.Pop();
+                            //        pops--;
+                            //    }
+                            //}
+                            
                             break;
                     }
                     y = ((State)SyntacticalStack.Peek()).transicion;
 
-                    x = Rules.ElementAt(r - 1).Id;
-                    NonTerminal nt = new NonTerminal(x);
-                    SyntacticalStack.Push(nt);
+                    x = element.columna;
+                    SyntacticalStack.Push(element);
 
                     r = LRTable[y][x];
                     SyntacticalStack.Push(new State(r));
                     newSymbol = false;
-                    generatePrintedStack();
+                    GeneratePrintedStack();
                     //Root = element
                 }
                 else
@@ -313,7 +344,7 @@ namespace CompiladorTraductores2
             return result.ToString();
         }
 
-        private void generatePrintedStack() {
+        private void GeneratePrintedStack() {
             Stack<StackElement> temp = new Stack<StackElement>();
             foreach (StackElement em in SyntacticalStack)
             {
@@ -321,7 +352,7 @@ namespace CompiladorTraductores2
             }
             foreach (StackElement em in temp)
             {
-                stack.Append(em.imprimeTipo());
+                stack.Append(em.ImprimeTipo());
             }
             stack.Append(Environment.NewLine);
         }

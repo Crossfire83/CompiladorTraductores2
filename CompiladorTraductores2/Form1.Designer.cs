@@ -34,17 +34,17 @@
             this.sourceCodeTxt = new System.Windows.Forms.RichTextBox();
             this.btnParse = new System.Windows.Forms.Button();
             this.SymbolsTable = new System.Windows.Forms.DataGridView();
+            this.TokenValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TokenType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StackTextBox = new System.Windows.Forms.RichTextBox();
             this.ResultTextBox = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.TokenValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TokenType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Token = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SymbolsTable)).BeginInit();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -128,6 +128,27 @@
             this.SymbolsTable.Size = new System.Drawing.Size(956, 113);
             this.SymbolsTable.TabIndex = 2;
             // 
+            // TokenValue
+            // 
+            this.TokenValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.TokenValue.HeaderText = "Value";
+            this.TokenValue.Name = "TokenValue";
+            this.TokenValue.ReadOnly = true;
+            // 
+            // TokenType
+            // 
+            this.TokenType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.TokenType.HeaderText = "Type";
+            this.TokenType.Name = "TokenType";
+            this.TokenType.ReadOnly = true;
+            // 
+            // Token
+            // 
+            this.Token.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Token.HeaderText = "Token";
+            this.Token.Name = "Token";
+            this.Token.ReadOnly = true;
+            // 
             // StackTextBox
             // 
             this.StackTextBox.BackColor = System.Drawing.Color.White;
@@ -153,6 +174,30 @@
             this.ResultTextBox.Size = new System.Drawing.Size(956, 101);
             this.ResultTextBox.TabIndex = 5;
             this.ResultTextBox.Text = "";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Location = new System.Drawing.Point(3, 3);
+            this.label1.Margin = new System.Windows.Forms.Padding(3);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(425, 14);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Source Code";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Location = new System.Drawing.Point(534, 3);
+            this.label2.Margin = new System.Windows.Forms.Padding(3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(425, 14);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Syntactical Stack";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // toolStripContainer1
             // 
@@ -216,58 +261,13 @@
             this.toolStripButton2.Text = "LR Table";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Location = new System.Drawing.Point(3, 3);
-            this.label1.Margin = new System.Windows.Forms.Padding(3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(425, 14);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "Source Code";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(534, 3);
-            this.label2.Margin = new System.Windows.Forms.Padding(3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(425, 14);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Syntactical Stack";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // TokenValue
-            // 
-            this.TokenValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.TokenValue.HeaderText = "Value";
-            this.TokenValue.Name = "TokenValue";
-            this.TokenValue.ReadOnly = true;
-            // 
-            // TokenType
-            // 
-            this.TokenType.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.TokenType.HeaderText = "Type";
-            this.TokenType.Name = "TokenType";
-            this.TokenType.ReadOnly = true;
-            // 
-            // Token
-            // 
-            this.Token.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Token.HeaderText = "Token";
-            this.Token.Name = "Token";
-            this.Token.ReadOnly = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 450);
             this.Controls.Add(this.toolStripContainer1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "Form1";
             this.Text = "Form1";
             this.tableLayoutPanel1.ResumeLayout(false);
