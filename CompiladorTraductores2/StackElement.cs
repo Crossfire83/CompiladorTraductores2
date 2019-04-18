@@ -65,10 +65,12 @@ namespace CompiladorTraductores2
     {
         public int columna;
         //public StackElement element;
+        public bool containsChildren;
 
         protected NonTerminal(int c)
         {
             columna = c;
+            containsChildren = true;
             //element = new StackElement();
         }
 

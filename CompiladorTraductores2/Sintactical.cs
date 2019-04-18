@@ -14,6 +14,7 @@ namespace CompiladorTraductores2
         public List<List<int>> LRTable;
         private List<Rule> Rules;
         public StringBuilder stack;
+        public StackElement Root;
 
         public Sintactical(ref DataGridView SymbolsTable) {
             this.SymbolsTable = SymbolsTable;
@@ -330,7 +331,7 @@ namespace CompiladorTraductores2
                     SyntacticalStack.Push(new State(r));
                     newSymbol = false;
                     GeneratePrintedStack();
-                    //Root = element
+                    Root = element;
                 }
                 else
                     error = true;

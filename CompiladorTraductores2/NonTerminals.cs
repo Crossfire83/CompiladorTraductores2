@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace CompiladorTraductores2
 {
     //Regla 1
     public class Programa : NonTerminal
     {
-        Definiciones defs;
+        public Definiciones defs { get; private set; }
         public Programa(ref Stack<StackElement> pila) : base(24)
         {
             pila.Pop();
@@ -25,8 +21,8 @@ namespace CompiladorTraductores2
     //Regla 2 y 3
     public class Definiciones : NonTerminal
     {
-        Definicion def;
-        Definiciones defs;
+        public Definicion def { get; private set; }
+        public Definiciones defs { get; private set; }
 
         public Definiciones(ref Stack<StackElement> pila) : base(25)
         {
@@ -36,7 +32,7 @@ namespace CompiladorTraductores2
             def = pila.Pop() as Definicion;
         }
 
-        public Definiciones() : base(25) { def = null; defs = null; }
+        public Definiciones() : base(25) { def = null; defs = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -47,8 +43,8 @@ namespace CompiladorTraductores2
     //Regla 4 y 5
     public class Definicion : NonTerminal
     {
-        DefVar var;
-        DefFunc func;
+        public DefVar var { get; private set; }
+        public DefFunc func { get; private set; }
 
         public Definicion(ref Stack<StackElement> pila) : base(26)
         {
@@ -70,14 +66,21 @@ namespace CompiladorTraductores2
         {
             return " Definicion ";
         }
+
+        public NonTerminal GetChild() {
+            if (var != null) {
+                return var;
+            }
+            return func;
+        }
     }
 
     //Regla 6
     public class DefVar : NonTerminal
     {
-        public Symbol tipo;
-        public Symbol id;
-        public ListaVar lvar;
+        public Symbol tipo { get; private set; }
+        public Symbol id { get; private set; }
+        public ListaVar lvar { get; private set; }
 
         public DefVar(ref Stack<StackElement> pila) : base(27)
         {
@@ -100,8 +103,8 @@ namespace CompiladorTraductores2
     //Regla 7 y 8
     public class ListaVar : NonTerminal
     {
-        Symbol id;
-        ListaVar lvar;
+        public Symbol id { get; private set; }
+        public ListaVar lvar { get; private set; }
 
         public ListaVar(ref Stack<StackElement> pila) : base(28)
         {
@@ -113,7 +116,7 @@ namespace CompiladorTraductores2
             pila.Pop();  //quita coma
         }
 
-        public ListaVar() : base(28) { id = null; lvar = null; }
+        public ListaVar() : base(28) { id = null; lvar = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -125,10 +128,10 @@ namespace CompiladorTraductores2
     //Regla 9
     public class DefFunc : NonTerminal
     {
-        private Symbol tipo;
-        private Symbol id;
-        private Parametros parametros;
-        private BloqFunc bloqueFunc;
+        public Symbol tipo { get; private set; }
+        public Symbol id { get; private set; }
+        public Parametros parametros { get; private set; }
+        public BloqFunc bloqueFunc { get; private set; }
 
         public DefFunc(ref Stack<StackElement> pila) : base(29)
         {
@@ -155,9 +158,9 @@ namespace CompiladorTraductores2
     //Regla 10 y 11
     public class Parametros : NonTerminal
     {
-        private Symbol tipo;
-        private Symbol id;
-        private ListaParam listaParams;
+        public Symbol tipo { get; private set; }
+        public Symbol id { get; private set; }
+        public ListaParam listaParams { get; private set; }
 
         public Parametros(ref Stack<StackElement> pila) : base(30)
         {
@@ -174,6 +177,7 @@ namespace CompiladorTraductores2
             tipo = null;
             id = null;
             listaParams = null;
+            containsChildren = false;
         }
 
         public override string ImprimeTipo()
@@ -185,9 +189,9 @@ namespace CompiladorTraductores2
     //Regla 12 y 13
     public class ListaParam : NonTerminal
     {
-        private Symbol tipo;
-        private Symbol id;
-        private ListaParam listaParams;
+        public Symbol tipo { get; private set; }
+        public Symbol id { get; private set; }
+        public ListaParam listaParams { get; private set; }
 
         public ListaParam(ref Stack<StackElement> pila) : base(31)
         {
@@ -207,6 +211,7 @@ namespace CompiladorTraductores2
             tipo = null;
             id = null;
             listaParams = null;
+            containsChildren = false;
         }
 
         public override string ImprimeTipo()
@@ -218,7 +223,7 @@ namespace CompiladorTraductores2
     //Regla 14
     public class BloqFunc : NonTerminal
     {
-        DefLocales locales;
+        public DefLocales locales { get; private set; }
 
         public BloqFunc(ref Stack<StackElement> pila) : base(32)
         {
@@ -232,15 +237,15 @@ namespace CompiladorTraductores2
 
         public override string ImprimeTipo()
         {
-            return " DefLocales ";
+            return " BloqFunc ";
         }
     }
 
     //Regla 15 y 16
     public class DefLocales : NonTerminal
     {
-        DefLocal def;
-        DefLocales defs;
+        public DefLocal def { get; private set; }
+        public DefLocales defs { get; private set; }
 
         public DefLocales(ref Stack<StackElement> pila) : base(33)
         {
@@ -250,7 +255,7 @@ namespace CompiladorTraductores2
             def = pila.Pop() as DefLocal;
         }
 
-        public DefLocales() : base(33) { def = null; defs = null; }
+        public DefLocales() : base(33) { def = null; defs = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -261,8 +266,8 @@ namespace CompiladorTraductores2
     //Regla 17 y 18
     public class DefLocal : NonTerminal
     {
-        DefVar defv;
-        Sentencia sent;
+        public DefVar defv { get; private set; }
+        public Sentencia sent { get; private set; }
 
         public DefLocal(ref Stack<StackElement> pila) : base(34)
         {
@@ -283,13 +288,22 @@ namespace CompiladorTraductores2
         {
             return " DefLocal ";
         }
+
+        public NonTerminal GetChild()
+        {
+            if (defv != null)
+            {
+                return defv;
+            }
+            return sent;
+        }
     }
 
     //Regla 19 y 20
     public class Sentencias : NonTerminal
     {
-        Sentencia sent;
-        Sentencias sents;
+        public Sentencia sent { get; private set; }
+        public Sentencias sents { get; private set; }
 
         public Sentencias(ref Stack<StackElement> pila) : base(35)
         {
@@ -299,7 +313,7 @@ namespace CompiladorTraductores2
             sent = pila.Pop() as Sentencia;
         }
 
-        public Sentencias() : base(35) { sent = null; sents = null; }
+        public Sentencias() : base(35) { sent = null; sents = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -307,6 +321,7 @@ namespace CompiladorTraductores2
         }
     }
 
+    #region Tipos de Sentencia
     //Reglas 21, 22, 23, 24 y 25
     public abstract class Sentencia : NonTerminal {
 
@@ -321,8 +336,8 @@ namespace CompiladorTraductores2
     //Regla 21
     public class Asignacion : Sentencia
     {
-        Symbol id;
-        Expresion expresion;
+        public Symbol id { get; private set; }
+        public Expresion expresion { get; private set; }
 
         public Asignacion(ref Stack<StackElement> pila) : base() //<Sentencia> ::= id = <Expresion> ;
         {
@@ -340,9 +355,9 @@ namespace CompiladorTraductores2
     //Regla 22
     public class If : Sentencia
     {
-        Expresion expresion;
-        SentenciaBloque sentenciabloque;
-        Otro otro;
+        public Expresion expresion { get; private set; }
+        public SentenciaBloque sentenciabloque { get; private set; }
+        public Otro otro { get; private set; }
 
         public If(ref Stack<StackElement> pila) : base()
         {
@@ -364,8 +379,8 @@ namespace CompiladorTraductores2
     //Regla 23
     public class While : Sentencia
     {
-        Expresion expresion;
-        Bloque bloque;
+        public Expresion expresion { get; private set; }
+        public Bloque bloque { get; private set; }
 
         public While(ref Stack<StackElement> pila) : base()
         {
@@ -385,7 +400,7 @@ namespace CompiladorTraductores2
     //Regla 24
     public class Return : Sentencia
     {
-        ValorRegresa exp;
+        public ValorRegresa exp { get; private set; }
 
         public Return(ref Stack<StackElement> pila) : base()
         {
@@ -401,7 +416,7 @@ namespace CompiladorTraductores2
     //Regla 25
     public class SentenciaLLama : Sentencia
     {
-        LlamadaFunc llamadaFunc;
+        public LlamadaFunc llamadaFunc { get; private set; }
 
         public SentenciaLLama(ref Stack<StackElement> pila) : base()
         {
@@ -411,11 +426,12 @@ namespace CompiladorTraductores2
             llamadaFunc = pila.Pop() as LlamadaFunc; //quita llamadaFunc
         }
     }
+    #endregion
 
     //Regla 26 y 27
     public class Otro : NonTerminal
     {
-        public SentenciaBloque sentBloq;
+        public SentenciaBloque sentBloq { get; private set; }
 
         public Otro(ref Stack<StackElement> pila) : base(37)
         {
@@ -425,7 +441,7 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita else
         }
 
-        public Otro() : base(37) { sentBloq = null; }
+        public Otro() : base(37) { sentBloq = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -436,7 +452,7 @@ namespace CompiladorTraductores2
     //Regla 28
     public class Bloque : NonTerminal
     {
-        Sentencias sents;
+        public Sentencias sents { get; private set; }
 
         public Bloque(ref Stack<StackElement> pila) : base(38)
         {
@@ -457,7 +473,7 @@ namespace CompiladorTraductores2
     //Regla 29 y 30
     public class ValorRegresa : NonTerminal
     {
-        Expresion exp;
+        public Expresion exp { get; private set; }
 
         public ValorRegresa(ref Stack<StackElement> pila) : base(39)
         {
@@ -465,7 +481,7 @@ namespace CompiladorTraductores2
             exp = pila.Pop() as Expresion;
         }
 
-        public ValorRegresa() : base(39) { exp = null; }
+        public ValorRegresa() : base(39) { exp = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -476,8 +492,8 @@ namespace CompiladorTraductores2
     //Regla 31 y 32
     public class Argumentos : NonTerminal
     {
-        Expresion expr;
-        ListaArgumentos lArgs;
+        public Expresion expr { get; private set; }
+        public ListaArgumentos lArgs { get; private set; }
 
         public Argumentos(ref Stack<StackElement> pila) : base(40)
         {
@@ -487,7 +503,7 @@ namespace CompiladorTraductores2
             expr = pila.Pop() as Expresion;
         }
 
-        public Argumentos() : base(40) { lArgs = null; expr = null; }
+        public Argumentos() : base(40) { lArgs = null; expr = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -498,8 +514,8 @@ namespace CompiladorTraductores2
     //Regla 33 y 34
     public class ListaArgumentos : NonTerminal
     {
-        Expresion expr;
-        ListaArgumentos lArgs;
+        public Expresion expr { get; private set; }
+        public ListaArgumentos lArgs { get; private set; }
 
         public ListaArgumentos(ref Stack<StackElement> pila) : base(41)
         {
@@ -511,7 +527,7 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita coma
         }
 
-        public ListaArgumentos() : base(41) { lArgs = null; expr = null; }
+        public ListaArgumentos() : base(41) { lArgs = null; expr = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
@@ -522,8 +538,8 @@ namespace CompiladorTraductores2
     //Reglas 35, 36, 37, 38 y 39
     public class Termino : NonTerminal
     {
-        Symbol symb;
-        LlamadaFunc lfunc;
+        public Symbol symb { get; private set; }
+        public LlamadaFunc lfunc { get; private set; }
 
         public Termino(ref Stack<StackElement> pila) : base(42)
         {
@@ -550,8 +566,8 @@ namespace CompiladorTraductores2
     //Regla 40
     public class LlamadaFunc : NonTerminal
     {
-        Symbol id;
-        Argumentos argumentos;
+        public Symbol id { get; private set; }
+        public Argumentos argumentos { get; private set; }
 
         public LlamadaFunc(ref Stack<StackElement> pila) : base(43)
         {
@@ -574,8 +590,8 @@ namespace CompiladorTraductores2
     //Regla 41 y 42
     public class SentenciaBloque : NonTerminal
     {
-        Sentencia sent;
-        Bloque bloq;
+        public Sentencia sent { get; private set; }
+        public Bloque bloq { get; private set; }
 
         public SentenciaBloque(ref Stack<StackElement> pila) : base(44)
         {
@@ -596,13 +612,19 @@ namespace CompiladorTraductores2
         {
             return " SentenciaBloque ";
         }
+
+        public NonTerminal GetChild() {
+            if (sent != null)
+                return sent;
+            return bloq;
+        }
     }
 
     //Regla 43 a 52
     public class Expresion : NonTerminal
     {
-        Expresion expr;
-        Termino ter;
+        public Expresion expr { get; private set; }
+        public Termino ter { get; private set; }
 
         //Regla 43 y 52
         public Expresion(ref Stack<StackElement> pila) : base(45)
@@ -623,18 +645,24 @@ namespace CompiladorTraductores2
             }
         }
 
-        public Expresion() : base(45) { expr = null; ter = null; }
+        public Expresion() : base(45) { expr = null; ter = null; containsChildren = false; }
 
         public override string ImprimeTipo()
         {
             return " Expresion ";
+        }
+
+        public NonTerminal GetChild() {
+            if (expr != null)
+                return expr;
+            return ter;
         }
     }
 
     //Regla 44 y 45
     public class Operacion1 : Expresion
     {
-        Expresion der;
+        public Expresion der { get; private set; }
 
         public Operacion1(ref Stack<StackElement> pila) : base()
         {
@@ -643,14 +671,14 @@ namespace CompiladorTraductores2
             pila.Pop();
             symbol = pila.Pop().symbol; //quita el operador
         }
-
     }
 
     //Reglas 46 a 51
     public class Operacion2 : Expresion
     {
-        Expresion der;
-        Expresion izq;
+        public Expresion der { get; private set; }
+        public Expresion izq { get; private set; }
+
         public Operacion2(ref Stack<StackElement> pila) : base()
         {
             pila.Pop();

@@ -45,6 +45,8 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
+            this.label3 = new System.Windows.Forms.Label();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SymbolsTable)).BeginInit();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -55,10 +57,11 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tableLayoutPanel1.Controls.Add(this.sourceCodeTxt, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.btnParse, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.SymbolsTable, 0, 2);
@@ -66,6 +69,8 @@
             this.tableLayoutPanel1.Controls.Add(this.ResultTextBox, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.label3, 3, 0);
+            this.tableLayoutPanel1.Controls.Add(this.treeView1, 3, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -83,7 +88,7 @@
             this.sourceCodeTxt.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sourceCodeTxt.Location = new System.Drawing.Point(3, 23);
             this.sourceCodeTxt.Name = "sourceCodeTxt";
-            this.sourceCodeTxt.Size = new System.Drawing.Size(425, 173);
+            this.sourceCodeTxt.Size = new System.Drawing.Size(281, 173);
             this.sourceCodeTxt.TabIndex = 0;
             this.sourceCodeTxt.Text = "";
             this.sourceCodeTxt.WordWrap = false;
@@ -91,7 +96,8 @@
             // btnParse
             // 
             this.btnParse.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btnParse.Location = new System.Drawing.Point(434, 23);
+            this.btnParse.Location = new System.Drawing.Point(290, 70);
+            this.btnParse.Margin = new System.Windows.Forms.Padding(3, 50, 3, 3);
             this.btnParse.Name = "btnParse";
             this.btnParse.Size = new System.Drawing.Size(94, 23);
             this.btnParse.TabIndex = 1;
@@ -125,7 +131,7 @@
             this.SymbolsTable.RowHeadersVisible = false;
             this.SymbolsTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.SymbolsTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.SymbolsTable.Size = new System.Drawing.Size(956, 113);
+            this.SymbolsTable.Size = new System.Drawing.Size(668, 113);
             this.SymbolsTable.TabIndex = 2;
             // 
             // TokenValue
@@ -153,11 +159,11 @@
             // 
             this.StackTextBox.BackColor = System.Drawing.Color.White;
             this.StackTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.StackTextBox.Location = new System.Drawing.Point(534, 23);
+            this.StackTextBox.Location = new System.Drawing.Point(390, 23);
             this.StackTextBox.Name = "StackTextBox";
             this.StackTextBox.ReadOnly = true;
             this.StackTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.StackTextBox.Size = new System.Drawing.Size(425, 173);
+            this.StackTextBox.Size = new System.Drawing.Size(281, 173);
             this.StackTextBox.TabIndex = 4;
             this.StackTextBox.Text = "";
             this.StackTextBox.WordWrap = false;
@@ -171,7 +177,7 @@
             this.ResultTextBox.Name = "ResultTextBox";
             this.ResultTextBox.ReadOnly = true;
             this.ResultTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.ResultTextBox.Size = new System.Drawing.Size(956, 101);
+            this.ResultTextBox.Size = new System.Drawing.Size(668, 101);
             this.ResultTextBox.TabIndex = 5;
             this.ResultTextBox.Text = "";
             // 
@@ -182,7 +188,7 @@
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Margin = new System.Windows.Forms.Padding(3);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(425, 14);
+            this.label1.Size = new System.Drawing.Size(281, 14);
             this.label1.TabIndex = 6;
             this.label1.Text = "Source Code";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -191,10 +197,10 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(534, 3);
+            this.label2.Location = new System.Drawing.Point(390, 3);
             this.label2.Margin = new System.Windows.Forms.Padding(3);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(425, 14);
+            this.label2.Size = new System.Drawing.Size(281, 14);
             this.label2.TabIndex = 7;
             this.label2.Text = "Syntactical Stack";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -261,6 +267,27 @@
             this.toolStripButton2.Text = "LR Table";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Location = new System.Drawing.Point(677, 3);
+            this.label3.Margin = new System.Windows.Forms.Padding(3);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(282, 14);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Syntactical Tree";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // treeView1
+            // 
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(677, 23);
+            this.treeView1.Name = "treeView1";
+            this.tableLayoutPanel1.SetRowSpan(this.treeView1, 3);
+            this.treeView1.Size = new System.Drawing.Size(282, 399);
+            this.treeView1.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -300,6 +327,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn TokenValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn TokenType;
         private System.Windows.Forms.DataGridViewTextBoxColumn Token;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 
