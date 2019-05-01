@@ -9,10 +9,12 @@ namespace CompiladorTraductores2
         private int ind;
         private char c;
         public Symbol result;
+        private int linea;
         
         public Lexical()
         {
             ind = 0;
+            linea = 1;
         }
 
         public Lexical(string font) : this()
@@ -29,7 +31,11 @@ namespace CompiladorTraductores2
 
         private bool IsDigit(char c) { return char.IsDigit(c); }
 
-        private bool IsSpace(char c) { return char.IsWhiteSpace(c) || c == '\r' || c == '\n'; }
+        private bool IsSpace(char c) {
+            if (c == '\r' || c == '\n')
+                linea++;
+            return char.IsWhiteSpace(c) || c == '\r' || c == '\n';
+        }
 
         private void LeapBack() {
             if (c != '$') ind--;
@@ -356,6 +362,7 @@ namespace CompiladorTraductores2
                 }
             }
             result.value = temp.ToString();
+            result.linea = linea;
             return result;
         }
 

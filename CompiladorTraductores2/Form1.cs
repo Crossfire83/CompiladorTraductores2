@@ -22,6 +22,7 @@ namespace CompiladorTraductores2
             StackTextBox.Text = String.Empty;
             ResultTextBox.Text = String.Empty;
             StringBuilder result = new StringBuilder();
+            treeView1.Nodes.Clear();
             if (String.IsNullOrWhiteSpace(TablePath)) {
                 MessageBox.Show("Por favor cargar archivo con reglas de producción");
                 return;
@@ -73,7 +74,7 @@ namespace CompiladorTraductores2
                         GetSubNodes(childNode, ((DefVar)subnode).lvar);
                         break;
                     case "ListaVar":
-                        childNode.Nodes.Add(((ListaVar)subnode).id.name);
+                        childNode.Nodes.Add(((ListaVar)subnode).id.value);
                         GetSubNodes(childNode, ((ListaVar)subnode).lvar);
                         break;
                     case "DefFunc":
@@ -173,6 +174,8 @@ namespace CompiladorTraductores2
                             GetSubNodes(childNode, ((Expresion)subnode).GetChild());
                         }
                         break;
+                    default:
+                        break;
                 }
             }
             nodeToAddTo.Nodes.Add(childNode);
@@ -204,16 +207,17 @@ namespace CompiladorTraductores2
                 Filter = filter,
                 InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
             };
-            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            
+            try
             {
-                try
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     file = openFileDialog.FileName;
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("El archivo no se puede abrir", "Se ha producido un error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            }
+            catch (Exception ex)
+            {
+            MessageBox.Show("El archivo no se puede abrir", "Se ha producido un error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return file;
         }

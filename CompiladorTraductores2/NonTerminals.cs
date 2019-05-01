@@ -670,6 +670,7 @@ namespace CompiladorTraductores2
             der = pila.Pop() as Expresion; //quita expresion
             pila.Pop();
             symbol = pila.Pop().symbol; //quita el operador
+            containsChildren = true;
         }
     }
 
@@ -687,7 +688,7 @@ namespace CompiladorTraductores2
             symbol = pila.Pop().symbol;//quita el operador
             pila.Pop();
             izq = pila.Pop() as Expresion;//quita expresion
-
+            containsChildren = true;
         }
     }
 }

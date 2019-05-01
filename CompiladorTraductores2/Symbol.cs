@@ -34,6 +34,7 @@
         public SymbolType type;
         public string name;
         public string value;
+        public int linea;
 
         public override string ToString()
         {

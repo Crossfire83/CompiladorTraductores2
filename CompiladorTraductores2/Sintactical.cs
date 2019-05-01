@@ -340,7 +340,7 @@ namespace CompiladorTraductores2
 
             StringBuilder result = new StringBuilder();
             if (error) {
-                result.Append("Error en símbolo: " + currentSymbol.value + "\r\n");
+                result.Append("Error en símbolo: " + currentSymbol.value + "\tLinea: " + currentSymbol.linea + "\r\n");
             }
             return result.ToString();
         }
