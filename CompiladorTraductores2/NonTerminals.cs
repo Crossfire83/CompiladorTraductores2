@@ -561,6 +561,12 @@ namespace CompiladorTraductores2
         {
             return " Termino ";
         }
+
+        public object getChild() {
+            if (symb != null)
+                return symb;
+            return lfunc;
+        }
     }
 
     //Regla 40

@@ -151,7 +151,14 @@ namespace CompiladorTraductores2
                         GetSubNodes(childNode, ((ListaArgumentos)subnode).lArgs);
                         break;
                     case "Termino":
-                        //TODO: llenar esta parte
+                        object temp = ((Termino)subnode).getChild();
+                        if (temp is Symbol)
+                        {
+                            childNode.Nodes.Add(((Symbol)temp).value);
+                        }
+                        else {
+                            GetSubNodes(childNode, (LlamadaFunc)temp);
+                        }
                         break;
                     case "LlamadaFunc":
                         childNode.Nodes.Add(((LlamadaFunc)subnode).id.value);
