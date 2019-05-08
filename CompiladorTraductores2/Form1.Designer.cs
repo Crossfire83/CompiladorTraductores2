@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.sourceCodeTxt = new System.Windows.Forms.RichTextBox();
@@ -41,12 +41,14 @@
             this.ResultTextBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
-            this.label3 = new System.Windows.Forms.Label();
-            this.treeView1 = new System.Windows.Forms.TreeView();
+            this.CollapseBtn = new System.Windows.Forms.Button();
+            this.ExpandBtn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SymbolsTable)).BeginInit();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -57,11 +59,12 @@
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnCount = 5;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33777F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33777F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66222F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.66222F));
             this.tableLayoutPanel1.Controls.Add(this.sourceCodeTxt, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.btnParse, 1, 1);
             this.tableLayoutPanel1.Controls.Add(this.SymbolsTable, 0, 2);
@@ -71,14 +74,17 @@
             this.tableLayoutPanel1.Controls.Add(this.label2, 2, 0);
             this.tableLayoutPanel1.Controls.Add(this.label3, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.treeView1, 3, 1);
+            this.tableLayoutPanel1.Controls.Add(this.CollapseBtn, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.ExpandBtn, 4, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 106F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(962, 425);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
@@ -88,7 +94,7 @@
             this.sourceCodeTxt.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.sourceCodeTxt.Location = new System.Drawing.Point(3, 23);
             this.sourceCodeTxt.Name = "sourceCodeTxt";
-            this.sourceCodeTxt.Size = new System.Drawing.Size(281, 173);
+            this.sourceCodeTxt.Size = new System.Drawing.Size(281, 161);
             this.sourceCodeTxt.TabIndex = 0;
             this.sourceCodeTxt.Text = "";
             this.sourceCodeTxt.WordWrap = false;
@@ -109,14 +115,14 @@
             // 
             this.SymbolsTable.AllowUserToAddRows = false;
             this.SymbolsTable.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.SymbolsTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.SymbolsTable.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.SymbolsTable.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.SymbolsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.TokenValue,
@@ -125,13 +131,13 @@
             this.tableLayoutPanel1.SetColumnSpan(this.SymbolsTable, 3);
             this.SymbolsTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SymbolsTable.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.SymbolsTable.Location = new System.Drawing.Point(3, 202);
+            this.SymbolsTable.Location = new System.Drawing.Point(3, 190);
             this.SymbolsTable.Name = "SymbolsTable";
             this.SymbolsTable.ReadOnly = true;
             this.SymbolsTable.RowHeadersVisible = false;
             this.SymbolsTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.SymbolsTable.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.SymbolsTable.Size = new System.Drawing.Size(668, 113);
+            this.SymbolsTable.Size = new System.Drawing.Size(668, 105);
             this.SymbolsTable.TabIndex = 2;
             // 
             // TokenValue
@@ -163,7 +169,7 @@
             this.StackTextBox.Name = "StackTextBox";
             this.StackTextBox.ReadOnly = true;
             this.StackTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-            this.StackTextBox.Size = new System.Drawing.Size(281, 173);
+            this.StackTextBox.Size = new System.Drawing.Size(281, 161);
             this.StackTextBox.TabIndex = 4;
             this.StackTextBox.Text = "";
             this.StackTextBox.WordWrap = false;
@@ -173,11 +179,12 @@
             this.ResultTextBox.BackColor = System.Drawing.Color.White;
             this.tableLayoutPanel1.SetColumnSpan(this.ResultTextBox, 3);
             this.ResultTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ResultTextBox.Location = new System.Drawing.Point(3, 321);
+            this.ResultTextBox.Location = new System.Drawing.Point(3, 301);
             this.ResultTextBox.Name = "ResultTextBox";
             this.ResultTextBox.ReadOnly = true;
+            this.tableLayoutPanel1.SetRowSpan(this.ResultTextBox, 2);
             this.ResultTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
-            this.ResultTextBox.Size = new System.Drawing.Size(668, 101);
+            this.ResultTextBox.Size = new System.Drawing.Size(668, 121);
             this.ResultTextBox.TabIndex = 5;
             this.ResultTextBox.Text = "";
             // 
@@ -204,6 +211,29 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Syntactical Stack";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.label3, 2);
+            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Location = new System.Drawing.Point(677, 3);
+            this.label3.Margin = new System.Windows.Forms.Padding(3);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(282, 14);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Syntactical Tree";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // treeView1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.treeView1, 2);
+            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView1.Location = new System.Drawing.Point(677, 23);
+            this.treeView1.Name = "treeView1";
+            this.tableLayoutPanel1.SetRowSpan(this.treeView1, 3);
+            this.treeView1.Size = new System.Drawing.Size(282, 378);
+            this.treeView1.TabIndex = 9;
             // 
             // toolStripContainer1
             // 
@@ -267,26 +297,35 @@
             this.toolStripButton2.Text = "LR Table";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
-            // label3
+            // CollapseBtn
             // 
-            this.label3.AutoSize = true;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.Location = new System.Drawing.Point(677, 3);
-            this.label3.Margin = new System.Windows.Forms.Padding(3);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(282, 14);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Syntactical Tree";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.CollapseBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.CollapseBtn.AutoSize = true;
+            this.CollapseBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.CollapseBtn.Location = new System.Drawing.Point(690, 404);
+            this.CollapseBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.CollapseBtn.Name = "CollapseBtn";
+            this.CollapseBtn.Padding = new System.Windows.Forms.Padding(20, 0, 20, 0);
+            this.CollapseBtn.Size = new System.Drawing.Size(111, 21);
+            this.CollapseBtn.TabIndex = 10;
+            this.CollapseBtn.Text = "Collapse All";
+            this.CollapseBtn.UseVisualStyleBackColor = true;
+            this.CollapseBtn.Click += new System.EventHandler(this.CollapseBtn_Click);
             // 
-            // treeView1
+            // ExpandBtn
             // 
-            this.treeView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treeView1.Location = new System.Drawing.Point(677, 23);
-            this.treeView1.Name = "treeView1";
-            this.tableLayoutPanel1.SetRowSpan(this.treeView1, 3);
-            this.treeView1.Size = new System.Drawing.Size(282, 399);
-            this.treeView1.TabIndex = 9;
+            this.ExpandBtn.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ExpandBtn.AutoSize = true;
+            this.ExpandBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ExpandBtn.Location = new System.Drawing.Point(836, 404);
+            this.ExpandBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.ExpandBtn.Name = "ExpandBtn";
+            this.ExpandBtn.Padding = new System.Windows.Forms.Padding(20, 0, 20, 0);
+            this.ExpandBtn.Size = new System.Drawing.Size(107, 21);
+            this.ExpandBtn.TabIndex = 11;
+            this.ExpandBtn.Text = "Expand All";
+            this.ExpandBtn.UseVisualStyleBackColor = true;
+            this.ExpandBtn.Click += new System.EventHandler(this.ExpandBtn_Click);
             // 
             // Form1
             // 
@@ -329,6 +368,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Token;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TreeView treeView1;
+        private System.Windows.Forms.Button CollapseBtn;
+        private System.Windows.Forms.Button ExpandBtn;
     }
 }
 

@@ -228,5 +228,15 @@ namespace CompiladorTraductores2
             }
             return file;
         }
+
+        private void CollapseBtn_Click(object sender, EventArgs e)
+        {
+            treeView1.CollapseAll();
+        }
+
+        private void ExpandBtn_Click(object sender, EventArgs e)
+        {
+            treeView1.ExpandAll();
+        }
     }
 }
