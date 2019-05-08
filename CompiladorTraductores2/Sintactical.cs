@@ -181,7 +181,7 @@ namespace CompiladorTraductores2
                             break;
 
                         case 13: //<ListaParam> ::= , tipo id <ListaParam>
-                            element = new Parametros(ref SyntacticalStack);
+                            element = new ListaParam(ref SyntacticalStack);
                             break;
 
                         case 14: //<BloqFunc> ::= { <DefLocales> }
