@@ -3,47 +3,18 @@ using System.Text;
 
 namespace CompiladorTraductores2
 {
-    public enum SymbolType {
-        Error = -1,
-        Identifier = 0,
-        Integer = 1,
-        Real = 2,
-        String = 3,
-        Type = 4,
-        AddOp = 5,
-        MultOp = 6,
-        RelatOp = 7,
-        OrOp = 8,
-        AndOp = 9,
-        NotOp = 10,
-        EqualOp = 11,
-        SemiColon = 12,
-        Comma = 13,
-        OpenParenthesis = 14,
-        CloseParenthesis = 15,
-        OpenBracket = 16,
-        CloseBracket = 17,
-        Assignation = 18,
-        If = 19,
-        While = 20,
-        Return = 21,
-        Else = 22,
-        Currency = 23
-    }
-
     class Lexical
     {
         private string font;
         private int ind;
-        private bool cont;
         private char c;
-        private int state;
         public Symbol result;
-        public int type;
-
+        private int linea;
+        
         public Lexical()
         {
             ind = 0;
+            linea = 1;
         }
 
         public Lexical(string font) : this()
@@ -52,24 +23,20 @@ namespace CompiladorTraductores2
         }
 
         private char NextChar() {
-            if (IsFinished()) return '\0';
+            if (IsFinished()) return '$';
             return font[ind++];
-        }
-
-        private void NextState(int state) { this.state = state; }
-
-        private void Acceptance(int state) {
-            this.state = state;
-            cont = false;
         }
 
         private bool IsLetter(char c) { return char.IsLetter(c); }
 
         private bool IsDigit(char c) { return char.IsDigit(c); }
 
-        private bool IsSpace(char c) { return char.IsWhiteSpace(c) || c == '\r' || c == '\n'; }
+        private bool IsSpace(char c) {
+            if (c == '\r' || c == '\n')
+                linea++;
+            return char.IsWhiteSpace(c) || c == '\r' || c == '\n';
+        }
 
-        //TODO: cambiar el nombre a ingles
         private void LeapBack() {
             if (c != '$') ind--;
         }
@@ -82,8 +49,8 @@ namespace CompiladorTraductores2
         public string TypeToString(int type) { throw new NotImplementedException(); }
 
         public Symbol NextSymbol() {
-            state = 0;
-            cont = true;
+            int state = 0;
+            bool cont = true;
             result = new Symbol();
             StringBuilder temp = new StringBuilder();
 
@@ -91,32 +58,32 @@ namespace CompiladorTraductores2
                 c = NextChar();
                 switch (state) {
                     case 0:
-                        if (IsDigit(c)) //TODO: revisar si float o int pueden empezar en 0
+                        if (IsDigit(c))
                         {
                             temp.Append(c);
-                            result.name = "Integer";
-                            result.type = SymbolType.Integer;
+                            result.name = "entero";
+                            result.type = SymbolType.entero;
                             state = 1;
                         }
                         else if (c == '+' || c == '-')
                         {
                             temp.Append(c);
-                            result.name = "Add Operator";
-                            result.type = SymbolType.AddOp;
+                            result.name = "opSuma";
+                            result.type = SymbolType.opSuma;
                             cont = false;
                         }
                         else if (c == '*' || c == '/')
                         {
                             temp.Append(c);
-                            result.name = "Multiplication Operator";
-                            result.type = SymbolType.MultOp;
+                            result.name = "opMul";
+                            result.type = SymbolType.opMul;
                             cont = false;
                         }
                         else if (c == '<' || c == '>')
                         {
                             temp.Append(c);
-                            result.name = "Relational Operator";
-                            result.type = SymbolType.RelatOp;
+                            result.name = "opRelac";
+                            result.type = SymbolType.opRelac;
                             state = 3;
                         }
                         else if (c == '!' || c == '=')
@@ -131,8 +98,8 @@ namespace CompiladorTraductores2
                             if (c == '&')
                             {
                                 temp.Append(c);
-                                result.name = "And Operator";
-                                result.type = SymbolType.AndOp;
+                                result.name = "opAnd";
+                                result.type = SymbolType.opAnd;
                             }
                             else
                             {
@@ -149,8 +116,8 @@ namespace CompiladorTraductores2
                             if (c == '|')
                             {
                                 temp.Append(c);
-                                result.name = "Or Operator";
-                                result.type = SymbolType.OrOp;
+                                result.name = "opOr";
+                                result.type = SymbolType.opOr;
                             }
                             else
                             {
@@ -163,49 +130,56 @@ namespace CompiladorTraductores2
                         else if (c == '(')
                         {
                             temp.Append(c);
-                            result.name = "Opening Parenthesis";
+                            result.name = "(";
                             result.type = SymbolType.OpenParenthesis;
                             cont = false;
                         }
                         else if (c == ')')
                         {
                             temp.Append(c);
-                            result.name = "Closing Parenthesis";
+                            result.name = ")";
                             result.type = SymbolType.CloseParenthesis;
                             cont = false;
                         }
                         else if (c == '{')
                         {
                             temp.Append(c);
-                            result.name = "Opening Bracket";
+                            result.name = "{";
                             result.type = SymbolType.OpenBracket;
                             cont = false;
                         }
                         else if (c == '}')
                         {
                             temp.Append(c);
-                            result.name = "Closing Bracket";
+                            result.name = "}";
                             result.type = SymbolType.CloseBracket;
                             cont = false;
                         }
                         else if (c == ';')
                         {
                             temp.Append(c);
-                            result.name = "SemiColon";
+                            result.name = ";";
                             result.type = SymbolType.SemiColon;
+                            cont = false;
+                        }
+                        else if (c == ',')
+                        {
+                            temp.Append(c);
+                            result.name = ",";
+                            result.type = SymbolType.Comma;
                             cont = false;
                         }
                         else if (IsLetter(c))
                         {
                             temp.Append(c);
-                            result.name = "Identifier";
-                            result.type = SymbolType.Identifier;
+                            result.name = "identificador";
+                            result.type = SymbolType.identificador;
                             state = 5;
                         }
                         else if (c == '$')
                         {
                             temp.Append(c);
-                            result.name = "Currency";
+                            result.name = "$";
                             result.type = SymbolType.Currency;
                             cont = false;
                         }
@@ -217,8 +191,8 @@ namespace CompiladorTraductores2
                         else if (c == '"')
                         {
                             temp.Append(c);
-                            result.name = "String";
-                            result.type = SymbolType.String;
+                            result.name = "cadena";
+                            result.type = SymbolType.cadena;
                             state = 7;
                         }
                         else {
@@ -234,7 +208,7 @@ namespace CompiladorTraductores2
                             temp.Append(c);
 
                             result.name = "int";
-                            result.type = SymbolType.Integer;
+                            result.type = SymbolType.entero;
                         }
                         else if (c == '.')
                         {
@@ -251,7 +225,7 @@ namespace CompiladorTraductores2
                         {
                             temp.Append(c);
                             result.name = "float";
-                            result.type = SymbolType.Real;
+                            result.type = SymbolType.real;
                             state = 6;
                         }
                         else {
@@ -265,8 +239,8 @@ namespace CompiladorTraductores2
                         if (c == '=')
                         {
                             temp.Append(c);
-                            result.name = "Relational Operator";
-                            result.type = SymbolType.RelatOp;
+                            result.name = "opRelac";
+                            result.type = SymbolType.opRelac;
                         }
                         else
                         {
@@ -279,20 +253,20 @@ namespace CompiladorTraductores2
                         {
                             temp.Append(c);
                             cont = false;
-                            result.name = "Equality Operator";
-                            result.type = SymbolType.EqualOp;
+                            result.name = "opIgualdad";
+                            result.type = SymbolType.opIgualdad;
                         }
                         else
                         {
                             if (temp.ToString() == "=")
                             {
-                                result.name = "Assignation Operator";
+                                result.name = "=";
                                 result.type = SymbolType.Assignation;
                             }
                             else if (temp.ToString() == "!")
                             {
-                                result.name = "Not Operator";
-                                result.type = SymbolType.NotOp;
+                                result.name = "!";
+                                result.type = SymbolType.opNot;
                             }
                             cont = false;
                             LeapBack();
@@ -328,23 +302,24 @@ namespace CompiladorTraductores2
                             }
                             else if (temp.ToString().ToLower() == "int" || 
                                 temp.ToString().ToLower() == "float" ||
-                                temp.ToString().ToLower() == "string")
+                                temp.ToString().ToLower() == "string" ||
+                                temp.ToString().ToLower() == "void")
                             {
-                                result.name = "Type";
-                                result.type = SymbolType.Type;
+                                result.name = "tipo";
+                                result.type = SymbolType.tipo;
                                 cont = false;
                             }
                             else
                             {
-                                result.name = "Identifier";
-                                result.type = SymbolType.Identifier;
+                                result.name = "identificador";
+                                result.type = SymbolType.identificador;
                             }
                         }
                         else if (IsDigit(c))
                         {
                             temp.Append(c);
-                            result.name = "Identifier";
-                            result.type = SymbolType.Identifier;
+                            result.name = "identificador";
+                            result.type = SymbolType.identificador;
                         }
                         else {
                             LeapBack();
@@ -387,6 +362,7 @@ namespace CompiladorTraductores2
                 }
             }
             result.value = temp.ToString();
+            result.linea = linea;
             return result;
         }
 
