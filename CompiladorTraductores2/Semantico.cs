@@ -8,8 +8,8 @@ namespace CompiladorTraductores2
 {
     public class Semantico
     {
-        public List<ElementoTabla> Simbolos { get; set; }
-        public List<string> errores { get; set; }
+        public List<ElementoTabla> Simbolos;
+        public List<string> errores;
 
         public Semantico() {
             Simbolos = new List<ElementoTabla>();

@@ -15,6 +15,7 @@ namespace CompiladorTraductores2
         private List<Rule> Rules;
         public StringBuilder stack;
         public StackElement Root;
+        public Semantico semantical;
 
         public Sintactical(ref DataGridView SymbolsTable) {
             this.SymbolsTable = SymbolsTable;
@@ -78,6 +79,7 @@ namespace CompiladorTraductores2
 
             stack = new StringBuilder();
             SyntacticalStack = new Stack<StackElement>();
+            semantical = new Semantico();
             int x = 0;  //Fila
             int y = 0;  //Columna
             int r = 0;  //Resultado (regla, desplazamiento o aceptacion)
@@ -340,8 +342,15 @@ namespace CompiladorTraductores2
 
             StringBuilder result = new StringBuilder();
             if (error) {
-                result.Append("Error en símbolo: " + currentSymbol.value + "\tLinea: " + currentSymbol.linea + "\r\n");
+                result.Append("Error en símbolo: " + currentSymbol.value + "\tLinea: " + currentSymbol.linea + Environment.NewLine);
             }
+
+            Root.ValidaTipos(ref semantical.Simbolos, ref semantical.errores);
+
+            foreach (string errorst in semantical.errores) {
+                result.Append(errorst + Environment.NewLine);
+            }
+
             return result.ToString();
         }
 
