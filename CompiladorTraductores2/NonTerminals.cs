@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace CompiladorTraductores2
 {
@@ -15,6 +17,11 @@ namespace CompiladorTraductores2
         public override string ImprimeTipo()
         {
             return " programa ";
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            defs.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
 
@@ -37,6 +44,14 @@ namespace CompiladorTraductores2
         public override string ImprimeTipo()
         {
             return " Definiciones ";
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            def.ValidaTipos(ref SymbolTable, ref errores);
+            if (defs.containsChildren) {
+                defs.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -73,6 +88,18 @@ namespace CompiladorTraductores2
             }
             return func;
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (var != null)
+            {
+                var.ValidaTipos(ref SymbolTable, ref errores);
+            }
+            else
+            {
+                func.ValidaTipos(ref SymbolTable, ref errores);
+            }
+        }
     }
 
     //Regla 6
@@ -93,10 +120,38 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita estado
             tipo = pila.Pop().symbol;
         }
+        
+        private DefVar() : base(27) { }
 
         public override string ImprimeTipo()
         {
             return " DefVar ";
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> tabsim, ref List<string> errores)
+        {
+            List<ElementoTabla> result = tabsim.Where(i => i.Id == id.value && i.Ambito == ambito).ToList();
+
+            if (result.Count == 0)
+            {
+                tabsim.Add(new ElementoTabla(id.value, tipo.value, ambito));
+            }
+            else
+            {
+                errores.Add("La variable " + id.value + "ya fue declarada dentro de " + ambito);
+            }
+            ListaVar aux = lvar;
+            if (aux.containsChildren) {
+                DefVar temp = new DefVar
+                {
+                    tipo = tipo,
+                    id = aux.id,
+                    lvar = aux.lvar,
+                    containsChildren = true
+                };
+                temp.ambito = ambito;
+                temp.ValidaTipos(ref tabsim, ref errores);
+            }
         }
     }
 
@@ -123,6 +178,7 @@ namespace CompiladorTraductores2
             return " ListaVar ";
         }
 
+        //TODO:
     }
 
     //Regla 9
@@ -132,6 +188,8 @@ namespace CompiladorTraductores2
         public Symbol id { get; private set; }
         public Parametros parametros { get; private set; }
         public BloqFunc bloqueFunc { get; private set; }
+
+        public string CadenaParam { get; private set; }
 
         public DefFunc(ref Stack<StackElement> pila) : base(29)
         {
@@ -153,6 +211,45 @@ namespace CompiladorTraductores2
         {
             return " DefFunc ";
         }
+
+        public bool ExisteFunc(List<ElementoTabla> SymbolTable, string nombre, string cadenaParam) {
+            ElementoTabla result = SymbolTable.FirstOrDefault(s => s.Id == nombre);
+
+            if (result != null && result.stParametro == cadenaParam)
+            {
+                return true;
+            }
+            //TODO: errores.Add("los parametros de la funcion " + id + " son incorrectos");
+            return false;
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            ambito = id.value;
+
+            if (parametros.containsChildren)
+            {
+                parametros.ambito = ambito;
+                parametros.ValidaTipos(ref SymbolTable, ref errores);
+                CadenaParam = parametros.CadenaParam;
+            }
+
+            if (ExisteFunc(SymbolTable, id.value, CadenaParam))
+            {
+                errores.Add("La funcion " + id.value + " ya existe.");
+            }
+            else {
+                SymbolTable.Add(new ElementoTabla(id.value, tipo.value, ambito, CadenaParam));
+            }
+
+            CadenaParam = "";
+
+            //if (bloqueFunc != null) {
+            bloqueFunc.ambito = ambito;
+            bloqueFunc.ValidaTipos(ref SymbolTable, ref errores);
+            //}
+        }
+        
     }
 
     //Regla 10 y 11
@@ -161,6 +258,8 @@ namespace CompiladorTraductores2
         public Symbol tipo { get; private set; }
         public Symbol id { get; private set; }
         public ListaParam listaParams { get; private set; }
+
+        public string CadenaParam { get; private set; }
 
         public Parametros(ref Stack<StackElement> pila) : base(30)
         {
@@ -183,6 +282,39 @@ namespace CompiladorTraductores2
         public override string ImprimeTipo()
         {
             return " Parametros ";
+        }
+
+        public bool Existe(List<ElementoTabla> SymbolTable, string id)
+        {
+            ElementoTabla r = SymbolTable.FirstOrDefault(s => s.Id == id);
+
+            if (r != null) return true;
+
+            return false;
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (Existe(SymbolTable, id.value))
+            {
+                errores.Add("La variable " + id.value + " ya fue declarada.");
+            }
+            else if(containsChildren) {
+                SymbolTable.Add(new ElementoTabla(id.value, tipo.value, ambito));
+            }
+            CadenaParam += tipo.value;
+
+            if (listaParams.containsChildren) {
+                Parametros aux = new Parametros()
+                {
+                    tipo = listaParams.tipo,
+                    id = listaParams.id,
+                    listaParams = listaParams.listaParams,
+                    ambito = listaParams.ambito
+                };
+                aux.ValidaTipos(ref SymbolTable, ref errores);
+                CadenaParam += aux.CadenaParam;
+            }
         }
     }
 
@@ -239,6 +371,11 @@ namespace CompiladorTraductores2
         {
             return " BloqFunc ";
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            locales.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     //Regla 15 y 16
@@ -260,6 +397,14 @@ namespace CompiladorTraductores2
         public override string ImprimeTipo()
         {
             return " DefLocales ";
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            def.ValidaTipos(ref SymbolTable, ref errores);
+            if (defs.containsChildren) {
+                defs.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -297,6 +442,15 @@ namespace CompiladorTraductores2
             }
             return sent;
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (defv != null)
+            {
+                defv.ValidaTipos(ref SymbolTable, ref errores);
+            }
+            else sent.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     //Regla 19 y 20
@@ -319,6 +473,13 @@ namespace CompiladorTraductores2
         {
             return " Sentencias ";
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            sent.ValidaTipos(ref SymbolTable, ref errores);
+            if(sents.containsChildren)
+                sents.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     #region Tipos de Sentencia
@@ -338,6 +499,7 @@ namespace CompiladorTraductores2
     {
         public Symbol id { get; private set; }
         public Expresion expresion { get; private set; }
+        public string leftDataType { get; private set; }
 
         public Asignacion(ref Stack<StackElement> pila) : base() //<Sentencia> ::= id = <Expresion> ;
         {
@@ -349,6 +511,28 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita =
             pila.Pop();
             id = pila.Pop().symbol; //quita id
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            List<ElementoTabla> resultado = SymbolTable.Where(elem => elem.Id == id.value && elem.Ambito == ambito).ToList();
+
+            expresion.ambito = ambito;
+            expresion.ValidaTipos(ref SymbolTable, ref errores);
+
+            if (resultado.Count == 0)
+            {
+                errores.Add("La variable " + id.value + " no existe en el contexto actual " + ambito);
+            }
+            else
+            {
+                leftDataType = resultado[0].Tipo;
+                if (leftDataType != expresion.tipoDato) {
+                    leftDataType = "error";
+                    errores.Add("El tipo de dato de " + id.value + " en la funcion " + ambito + " es diferente al de la expresion ");
+                }
+
+            }
         }
     }
 
@@ -374,6 +558,18 @@ namespace CompiladorTraductores2
             pila.Pop();
             pila.Pop(); //quita if
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            expresion.ValidaTipos(ref SymbolTable, ref errores);
+
+            if (expresion.tipoDato != "bool") { errores.Add("Se necesita una condición para evaluar"); }
+
+            sentenciabloque.ValidaTipos(ref SymbolTable, ref errores);
+
+            if(otro.containsChildren)
+                otro.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     //Regla 23
@@ -394,6 +590,15 @@ namespace CompiladorTraductores2
             pila.Pop(); //quita (
             pila.Pop();
             pila.Pop(); //quita while
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            expresion.ValidaTipos(ref SymbolTable, ref errores);
+
+            if (expresion.tipoDato != "bool") { errores.Add("Se necesita una condición para evaluar"); }
+
+            bloque.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
 
@@ -425,6 +630,11 @@ namespace CompiladorTraductores2
             pila.Pop();
             llamadaFunc = pila.Pop() as LlamadaFunc; //quita llamadaFunc
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            llamadaFunc.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
     #endregion
 
@@ -447,6 +657,11 @@ namespace CompiladorTraductores2
         {
             return " Otro ";
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            sentBloq.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     //Regla 28
@@ -467,6 +682,11 @@ namespace CompiladorTraductores2
         public override string ImprimeTipo()
         {
             return " Bloque ";
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            sents.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
 
@@ -492,8 +712,8 @@ namespace CompiladorTraductores2
     //Regla 31 y 32
     public class Argumentos : NonTerminal
     {
-        public Expresion expr { get; private set; }
-        public ListaArgumentos lArgs { get; private set; }
+        public Expresion expr { get; set; }
+        public ListaArgumentos lArgs { get; set; }
 
         public Argumentos(ref Stack<StackElement> pila) : base(40)
         {
@@ -540,6 +760,7 @@ namespace CompiladorTraductores2
     {
         public Symbol symb { get; private set; }
         public LlamadaFunc lfunc { get; private set; }
+        public string tipoDato { get; private set; }
 
         public Termino(ref Stack<StackElement> pila) : base(42)
         {
@@ -567,6 +788,15 @@ namespace CompiladorTraductores2
                 return symb;
             return lfunc;
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (symb != null)
+                tipoDato = symb.
+            else
+                lfunc.ValidaTipos(ref SymbolTable, ref errores);
+        }
+        //TODO: terminar mañana
     }
 
     //Regla 40
@@ -591,6 +821,30 @@ namespace CompiladorTraductores2
         {
             return " LLamadaFunc ";
         }
+
+        private bool Existe(List<ElementoTabla> SymbolTable, string simbolo, string cadena)
+        {
+            List<ElementoTabla> result = SymbolTable.Where(i => i.Id == simbolo && i.stParametro.Length == cadena.Length).ToList();
+
+            if (result.Count > 0) { return true; } else { return false; }
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            Argumentos aux = new Argumentos()
+            {
+                ambito = ambito,
+                expr = argumentos.expr,
+                lArgs = argumentos.lArgs,
+                containsChildren = true
+            };
+            StringBuilder cadena = new StringBuilder();
+            while (aux.containsChildren) {
+
+            }
+        }
+
+        //TODO: terminar esta chingadera
     }
 
     //Regla 41 y 42
@@ -624,6 +878,14 @@ namespace CompiladorTraductores2
                 return sent;
             return bloq;
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (sent != null)
+                sent.ValidaTipos(ref SymbolTable, ref errores);
+            else
+                bloq.ValidaTipos(ref SymbolTable, ref errores);
+        }
     }
 
     //Regla 43 a 52
@@ -631,6 +893,7 @@ namespace CompiladorTraductores2
     {
         public Expresion expr { get; private set; }
         public Termino ter { get; private set; }
+        public string tipoDato { get; protected set; }
 
         //Regla 43 y 52
         public Expresion(ref Stack<StackElement> pila) : base(45)
@@ -663,6 +926,16 @@ namespace CompiladorTraductores2
                 return expr;
             return ter;
         }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            if (expr != null)
+                expr.ValidaTipos(ref SymbolTable, ref errores);
+            else
+            {
+                ter.ValidaTipos(ref SymbolTable, ref errores);
+            }
+        }
     }
 
     //Regla 44 y 45
@@ -677,6 +950,14 @@ namespace CompiladorTraductores2
             pila.Pop();
             symbol = pila.Pop().symbol; //quita el operador
             containsChildren = true;
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            der.ambito = ambito;
+            der.ValidaTipos(ref SymbolTable, ref errores);
+
+            tipoDato = der.tipoDato;
         }
     }
 
@@ -695,6 +976,34 @@ namespace CompiladorTraductores2
             pila.Pop();
             izq = pila.Pop() as Expresion;//quita expresion
             containsChildren = true;
+        }
+
+        public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
+        {
+            der.ambito = ambito;
+            izq.ambito = ambito;
+
+            der.ValidaTipos(ref SymbolTable, ref errores);
+            izq.ValidaTipos(ref SymbolTable, ref errores);
+
+            if (der.tipoDato == izq.tipoDato)
+            {
+                if (symbol.type == SymbolType.opRelac ||
+                    symbol.type == SymbolType.opOr ||
+                    symbol.type == SymbolType.opAnd ||
+                    symbol.type == SymbolType.opIgualdad)
+                {
+                    tipoDato = "bool";
+                }
+                else
+                {
+                    tipoDato = der.tipoDato;
+                }
+            }
+            else {
+                tipoDato = "error";
+                errores.Add("No se pueden realizar operaciones con tipos de datos distintos");
+            }
         }
     }
 }

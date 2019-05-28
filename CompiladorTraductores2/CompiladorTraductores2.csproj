@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NonTerminals.cs" />
+    <Compile Include="Semantico.cs" />
     <Compile Include="Sintactical.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

@@ -2,11 +2,11 @@
 
 namespace CompiladorTraductores2
 {
-    public class StackElement
+    public abstract class StackElement
     {
-        public StackElement Next;
         public Symbol symbol;
-        public StackElement() {
+        public string ambito;
+        protected StackElement() {
 
         }
 
@@ -15,7 +15,9 @@ namespace CompiladorTraductores2
             return symbol.ToString();
         }
 
-        public virtual string ImprimeTipo() { return "Nodo"; }
+        public abstract string ImprimeTipo();
+
+        public virtual void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores) { }
     }
 
     public class State : StackElement
