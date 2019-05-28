@@ -341,11 +341,14 @@ namespace CompiladorTraductores2
             }
 
             StringBuilder result = new StringBuilder();
-            if (error) {
+            if (error)
+            {
                 result.Append("Error en símbolo: " + currentSymbol.value + "\tLinea: " + currentSymbol.linea + Environment.NewLine);
             }
-
-            Root.ValidaTipos(ref semantical.Simbolos, ref semantical.errores);
+            else
+            {
+                Root.ValidaTipos(ref semantical.Simbolos, ref semantical.errores);
+            }
 
             foreach (string errorst in semantical.errores) {
                 result.Append(errorst + Environment.NewLine);
