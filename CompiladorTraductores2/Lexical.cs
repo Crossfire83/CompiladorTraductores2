@@ -61,7 +61,7 @@ namespace CompiladorTraductores2
                         if (IsDigit(c))
                         {
                             temp.Append(c);
-                            result.name = "entero";
+                            result.name = "int";
                             result.type = SymbolType.entero;
                             state = 1;
                         }

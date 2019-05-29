@@ -21,6 +21,8 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            ambito = "global";
+            defs.ambito = ambito;
             defs.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -48,8 +50,10 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            def.ambito = ambito;
             def.ValidaTipos(ref SymbolTable, ref errores);
             if (defs.containsChildren) {
+                defs.ambito = ambito;
                 defs.ValidaTipos(ref SymbolTable, ref errores);
             }
         }
@@ -93,10 +97,12 @@ namespace CompiladorTraductores2
         {
             if (var != null)
             {
+                var.ambito = ambito;
                 var.ValidaTipos(ref SymbolTable, ref errores);
             }
             else
             {
+                func.ambito = ambito;
                 func.ValidaTipos(ref SymbolTable, ref errores);
             }
         }
@@ -305,6 +311,7 @@ namespace CompiladorTraductores2
             CadenaParam += tipo.value;
 
             if (listaParams.containsChildren) {
+                listaParams.ambito = ambito;
                 Parametros aux = new Parametros()
                 {
                     tipo = listaParams.tipo,
@@ -374,6 +381,7 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            locales.ambito = ambito;
             locales.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -401,8 +409,10 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            def.ambito = ambito;
             def.ValidaTipos(ref SymbolTable, ref errores);
             if (defs.containsChildren) {
+                defs.ambito = ambito;
                 defs.ValidaTipos(ref SymbolTable, ref errores);
             }
         }
@@ -447,9 +457,14 @@ namespace CompiladorTraductores2
         {
             if (defv != null)
             {
+                defv.ambito = ambito;
                 defv.ValidaTipos(ref SymbolTable, ref errores);
             }
-            else sent.ValidaTipos(ref SymbolTable, ref errores);
+            else
+            {
+                sent.ambito = ambito;
+                sent.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -476,9 +491,13 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            sent.ambito = ambito;
             sent.ValidaTipos(ref SymbolTable, ref errores);
-            if(sents.containsChildren)
+            if (sents.containsChildren)
+            {
+                sents.ambito = ambito;
                 sents.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -515,7 +534,11 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
-            List<ElementoTabla> resultado = SymbolTable.Where(elem => elem.Id == id.value && elem.Ambito == ambito).ToList();
+            List<ElementoTabla> resultado = SymbolTable
+                .Where(elem => elem.Id == id.value && 
+                        (elem.Ambito == ambito || 
+                        elem.Ambito == "global"))
+                .ToList();
 
             expresion.ambito = ambito;
             expresion.ValidaTipos(ref SymbolTable, ref errores);
@@ -561,14 +584,19 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            expresion.ambito = ambito;
             expresion.ValidaTipos(ref SymbolTable, ref errores);
 
             if (expresion.tipoDato != "bool") { errores.Add("Se necesita una condición para evaluar"); }
 
+            sentenciabloque.ambito = ambito;
             sentenciabloque.ValidaTipos(ref SymbolTable, ref errores);
 
-            if(otro.containsChildren)
+            if (otro.containsChildren)
+            {
+                otro.ambito = ambito;
                 otro.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -594,10 +622,12 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            expresion.ambito = ambito;
             expresion.ValidaTipos(ref SymbolTable, ref errores);
 
             if (expresion.tipoDato != "bool") { errores.Add("Se necesita una condición para evaluar"); }
 
+            bloque.ambito = ambito;
             bloque.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -633,6 +663,7 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            llamadaFunc.ambito = ambito;
             llamadaFunc.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -660,6 +691,7 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            sentBloq.ambito = ambito;
             sentBloq.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -686,6 +718,7 @@ namespace CompiladorTraductores2
 
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
+            sents.ambito = ambito;
             sents.ValidaTipos(ref SymbolTable, ref errores);
         }
     }
@@ -792,9 +825,27 @@ namespace CompiladorTraductores2
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
             if (symb != null)
-                tipoDato = symb.
+            {
+                if (symb.type == SymbolType.identificador)
+                {
+                    List<ElementoTabla> result = SymbolTable
+                        .Where(i => i.Id == symb.value && 
+                                (i.Ambito == ambito || 
+                                i.Ambito == "global"))
+                        .ToList();
+                    if (result.Count > 0) { tipoDato = result[0].Tipo; }
+                    else { errores.Add("No se encuentra la variable " + symb.value + " dentro de la funcion " + ambito); }
+                }
+                else {
+                    tipoDato = symb.name;
+                }
+            }
             else
+            {
                 lfunc.ValidaTipos(ref SymbolTable, ref errores);
+                //TODO: tipoDato = lfunc.tipoDato;
+            }
+
         }
         //TODO: terminar mañana
     }
@@ -882,9 +933,15 @@ namespace CompiladorTraductores2
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
             if (sent != null)
+            {
+                sent.ambito = ambito;
                 sent.ValidaTipos(ref SymbolTable, ref errores);
+            }
             else
+            {
+                bloq.ambito = ambito;
                 bloq.ValidaTipos(ref SymbolTable, ref errores);
+            }
         }
     }
 
@@ -930,10 +987,16 @@ namespace CompiladorTraductores2
         public override void ValidaTipos(ref List<ElementoTabla> SymbolTable, ref List<string> errores)
         {
             if (expr != null)
+            {
+                expr.ambito = ambito;
                 expr.ValidaTipos(ref SymbolTable, ref errores);
+                tipoDato = expr.tipoDato;
+            }
             else
             {
+                ter.ambito = ambito;
                 ter.ValidaTipos(ref SymbolTable, ref errores);
+                tipoDato = ter.tipoDato;
             }
         }
     }
